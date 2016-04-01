@@ -1,0 +1,5 @@
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
+importFrom(Rcpp, cpp_object_initializer)
+importClassesFrom(Rcpp, "C++Object")
+useDynLib(hashmap)

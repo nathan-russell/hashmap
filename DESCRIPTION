@@ -1,0 +1,22 @@
+Package: hashmap
+Type: Package
+Title: The faster hashmap
+Version: 0.0.0.9000
+Date: 2016-04-01
+Authors@R: person("Nathan", "Russell", email = "russell.nr2012@gmail.com",
+    role = c("aut", "cre"))
+Description: A single S4 class, hashmap, is provided for fast
+    key-value storage of integer, numeric, and character vectors.
+    Internally, hashmap makes extensive use of Rcpp, boost::variant,
+    and boost::unordered_map to achieve high performance, type-safety,
+    and versatility, without requiring a C++11 compiler.
+License: MIT + file LICENSE
+LazyData: Yes
+ByteCompile: TRUE
+Imports:
+    Rcpp (>= 0.12.4.1)
+LinkingTo:
+    Rcpp,
+    BH (>= 1.60.0)
+Suggests:
+    devtools
