@@ -19,4 +19,5 @@ LinkingTo:
     Rcpp,
     BH (>= 1.60.0)
 Suggests:
-    devtools
+    devtools,
+    microbenchmark
