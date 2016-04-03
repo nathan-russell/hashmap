@@ -31,6 +31,10 @@
 #'      associated with \code{lookup_keys} for existing key elements,
 #'      and \code{NA} otherwise
 #'
+#'  \item \code{has_key(lookup_key)}: returns \code{TRUE} if
+#'      \code{lookup_key} exists as a key in \code{H} and
+#'      \code{FALSE} if it does not
+#'
 #'  \item \code{rehash(new_keys, new_values)}: deletes current
 #'      \code{keys} and \code{values}, and reinitialize \code{H}
 #'      with \code{new_keys} and \code{new_values}, where

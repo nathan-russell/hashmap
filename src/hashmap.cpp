@@ -21,6 +21,8 @@ RCPP_MODULE(hashmap_module) {
     .method("find_values", &HashMap::find_values)
     .method("[[", &HashMap::find_values)
 
+    .method("has_key", &HashMap::has_key)
+
     .method("all_keys", &HashMap::all_keys)
     .method("all_values", &HashMap::all_values)
     .method("data", &HashMap::data)

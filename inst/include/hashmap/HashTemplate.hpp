@@ -125,6 +125,14 @@ public:
         return find_values(Rcpp::as<key_vec>(keys));
     }
 
+    bool has_key(const key_vec& keys) const {
+        return map.find(extractor(keys, 0)) != map.end();
+    }
+
+    bool has_key(SEXP keys) const {
+        return has_key(Rcpp::as<key_vec>(keys));
+    }
+
     value_vec data() const {
         R_xlen_t i = 0, n = map.size();
 

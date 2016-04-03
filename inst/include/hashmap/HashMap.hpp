@@ -75,6 +75,18 @@ private:
         }
     };
 
+    struct has_key_visitor : public boost::static_visitor<bool> {
+        SEXP keys;
+        has_key_visitor(SEXP keys_)
+            : keys(keys_)
+        {}
+
+        template <typename T>
+        bool operator()(const T& t) const {
+            return t.has_key(keys);
+        }
+    };
+
     struct data_visitor : public boost::static_visitor<SEXP> {
         template <typename T>
         SEXP operator()(const T& t) const {
@@ -214,7 +226,13 @@ public:
 
     SEXP find_values(SEXP x) const {
         find_values_visitor v(x);
-        return boost::apply_visitor(find_values_visitor(x), variant);
+        //return boost::apply_visitor(find_values_visitor(x), variant);
+        return boost::apply_visitor(v, variant);
+    }
+
+    bool has_key(SEXP x) const {
+        has_key_visitor v(x);
+        return boost::apply_visitor(v, variant);
     }
 
     SEXP data() const {
