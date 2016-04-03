@@ -16,7 +16,7 @@ ByteCompile: TRUE
 Imports:
     Rcpp (>= 0.12.4)
 LinkingTo: Rcpp,
-    BH (>= 1.60.0)
+    BH
 Suggests:
     devtools,
     microbenchmark
