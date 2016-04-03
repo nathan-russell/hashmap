@@ -1,7 +1,7 @@
 #ifndef hashmap__traits__hpp
 #define hashmap__traits__hpp
 
-#include <Rcpp.h>
+#include "utils.hpp"
 
 namespace hashmap {
 namespace traits {

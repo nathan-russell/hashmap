@@ -3,28 +3,25 @@
 #' @title The faster hashmap
 #'
 #' @name hashmap
-#' @aliases Rcpp_hashmap
-#'
 #' @rdname hashmap
-#' @export
 #'
 #' @description An S4 class for fast key-value storage
 #'      of atomic vectors
 #'
-#' @usage new(hashmap, x, y)
+#' @usage hashmap(keys, values, ...)
 #'
-#' @param x an atomic vector of type \code{integer},
+#' @param keys an atomic vector of type \code{integer},
 #'      \code{numeric}, or \code{character} representing
 #'      the lookup keys
 #'
-#' @param y an atomic vector of type \code{integer},
-#'      \code{numeric}, or \code{character} representing
-#'      the corresponding lookup values
+#' @param values an atomic vector of type \code{integer},
+#'      \code{numeric}, \code{character}, or \code{logical}
+#'      representing the corresponding lookup values
+#'
+#' @param ... other arguments passed to \code{new} when constructing
+#'      the instance
 #'
 #' @return a \code{hashmap} object
-#'
-#' @useDynLib hashmap
-#' @importFrom Rcpp sourceCpp
 #'
 #' @examples
 #'
@@ -35,18 +32,24 @@
 #' y <- rnorm(length(x))
 #' z <- sample(x, 100)
 #'
-#' H <- new(hashmap, x, y)
+#' H <- hashmap(x, y)
 #'
-#' all.equal(y[match(z, x)], H$find_values(z))
+#' all.equal(y[match(z, x)], H[[z]])
 #'
 #' \dontrun{
 #' microbenchmark::microbenchmark(
 #'     "R" = y[match(z, x)],
-#'     "H" = H$find_values(z),
+#'     "H" = H[[z]],
 #'     times = 500L
 #' )
 #' }
 
+#' @importFrom methods new
+
 Rcpp::loadModule("hashmap_module", TRUE)
 
+#' @export hashmap
+hashmap <- function(keys, values, ...) {
+    new("Rcpp_Hashmap", keys, values, ...)
+}
 

@@ -14,10 +14,16 @@ License: MIT + file LICENSE
 LazyData: Yes
 ByteCompile: TRUE
 Imports:
-    Rcpp (>= 0.12.4.1)
-LinkingTo:
-    Rcpp,
+    Rcpp (>= 0.12.4)
+LinkingTo: Rcpp,
     BH (>= 1.60.0)
 Suggests:
     devtools,
     microbenchmark
+Depends:
+    methods
+Collate:
+    'hashmap.R'
+    'classes.R'
+    'Hashmap-class.R'
+    'zzz.R'

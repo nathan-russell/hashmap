@@ -4,8 +4,10 @@
 using namespace Rcpp;
 using namespace hashmap;
 
+RCPP_EXPOSED_CLASS(Hashmap)
+
 RCPP_MODULE(hashmap_module) {
-    class_<HashMap>("hashmap")
+    class_<HashMap>("Hashmap")
 
     .constructor<SEXP, SEXP>()
 

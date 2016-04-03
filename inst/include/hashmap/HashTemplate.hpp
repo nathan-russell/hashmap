@@ -53,6 +53,7 @@ public:
         n = nk < nv ? nk : nv;
 
         for ( ; i < n; i++) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
             map[extractor(keys, i)] = extractor(values, i);
         }
     }
@@ -69,6 +70,7 @@ public:
         n = nk < nv ? nk : nv;
 
         for ( ; i < n; i++) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
             map[extractor(keys, i)] = extractor(values, i);
         }
     }
@@ -82,6 +84,7 @@ public:
         const_iterator first = map.begin(), last = map.end();
 
         for (R_xlen_t i = 0; first != last; ++first) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
             res[i++] = first->first;
         }
 
@@ -93,6 +96,7 @@ public:
         const_iterator first = map.begin(), last = map.end();
 
         for (R_xlen_t i = 0; first != last; ++first) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
             res[i++] = first->second;
         }
 
@@ -105,6 +109,7 @@ public:
         const_iterator last = map.end();
 
         for ( ; i < n; i++) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
             const_iterator pos = map.find(extractor(keys, i));
             if (pos != last) {
                 res[i] = pos->second;
@@ -129,6 +134,7 @@ public:
         const_iterator first = map.begin(), last = map.end();
 
         for ( ; first != last; ++first) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
             knames[i] = first->first;
             res[i] = first->second;
             ++i;
