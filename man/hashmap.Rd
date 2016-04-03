@@ -2,7 +2,7 @@
 % Please edit documentation in R/hashmap.R
 \name{hashmap}
 \alias{hashmap}
-\title{The faster hashmap}
+\title{Atomic vector hash map}
 \usage{
 hashmap(keys, values, ...)
 }
@@ -16,17 +16,16 @@ hashmap(keys, values, ...)
      representing the corresponding lookup values}
 
 \item{...}{other arguments passed to \code{new} when constructing
-     the instance}
+     the \code{Hashmap} instance}
 }
 \value{
-a \code{hashmap} object
+a \code{Hashmap} object
 }
 \description{
-An S4 class for fast key-value storage
-     of atomic vectors
+Create a new \code{Hashmap} instance
 }
 \details{
-The faster hashmap
+TODO
 }
 \examples{
 x <- replicate(10e3,
@@ -47,5 +46,9 @@ microbenchmark::microbenchmark(
     times = 500L
 )
 }
+}
+\seealso{
+\code{\link{Hashmap}} for a more detailed
+     discussion of available methods
 }
 

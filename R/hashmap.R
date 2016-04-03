@@ -1,12 +1,9 @@
-#' The faster hashmap
-#'
-#' @title The faster hashmap
+#' @title Atomic vector hash map
 #'
 #' @name hashmap
 #' @rdname hashmap
 #'
-#' @description An S4 class for fast key-value storage
-#'      of atomic vectors
+#' @description Create a new \code{Hashmap} instance
 #'
 #' @usage hashmap(keys, values, ...)
 #'
@@ -19,9 +16,14 @@
 #'      representing the corresponding lookup values
 #'
 #' @param ... other arguments passed to \code{new} when constructing
-#'      the instance
+#'      the \code{Hashmap} instance
 #'
-#' @return a \code{hashmap} object
+#' @return a \code{Hashmap} object
+#'
+#' @details TODO
+#'
+#' @seealso \code{\link{Hashmap}} for a more detailed
+#'      discussion of available methods
 #'
 #' @examples
 #'
