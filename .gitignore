@@ -27,3 +27,6 @@
 *.out
 *.app
 .Rproj.user
+
+# Misc R files
+.Rhistory
