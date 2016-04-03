@@ -123,7 +123,7 @@ H[[c("a", "e", "zzz")]]
 
 ------------------------------------------------------------------------
 
-#### Other features
+#### Other methods
 
 ``` r
 H$size()
@@ -150,6 +150,7 @@ H$all_values()
 H$rehash(as.integer(1:3), letters[1:3])
 
 # data() returns a named vector
+H$data()
 #  3   2   1 
 #"c" "b" "a" 
 
@@ -176,3 +177,7 @@ H
 ```
 
 ------------------------------------------------------------------------
+
+#### Performance
+
+TODO
