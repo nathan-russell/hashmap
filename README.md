@@ -22,7 +22,7 @@ ls(EE)
 #[1] "A" "B"
 ```
 
-In many situations, this is a fine solution - lookups are reasonably fast, and `environment`s are highly flexible, allowing on to store virtually any type of R object (functions, lists, other environments, etc.). However, one of the major downsides to using `envinronment`s as hash tables is the inability to work with vector arguments:
+In many situations, this is a fine solution - lookups are reasonably fast, and `environment`s are highly flexible, allowing one to store virtually any type of R object (functions, lists, other environments, etc.). However, one of the major downsides to using `envinronment`s as hash tables is the inability to work with vector arguments:
 
 ``` r
 EE[[c("A", "B")]]
@@ -34,7 +34,7 @@ EE[c("A", "B")]
 #  object of type 'environment' is not subsettable
 ```
 
-This is rather unfortunate considering R's overwheleming tendency towards vectorized operations.
+This is rather unfortunate considering R's overwhelming tendency towards vectorized operations.
 
 ------------------------------------------------------------------------
 
