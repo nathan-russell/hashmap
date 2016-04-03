@@ -22,7 +22,7 @@ setMethod("show", "Rcpp_Hashmap",
         .values <- sprintf("[%s]", as.character(unname(.data)))
         .width <- max(c(6, nchar(.keys), nchar(.values)))
         .txt <- sprintf(
-            "%s => %s",
+            "## %s => %s",
             formatC(c(.keys, "[...]"),
                     width = .width),
             formatC(c(.values, "[...]"),

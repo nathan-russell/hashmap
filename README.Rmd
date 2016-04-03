@@ -1,12 +1,29 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
 hashmap
 =======
 
-### Motivation
+### Motivation 
 
-Unlike many programming languages, R does not implement a native hash table class. The typical workaround is to use `environment`s, taking advantage of the fact that these objects are, by default, internally hashed:
+Unlike many programming languages, R does not implement a native hash table 
+class. The typical workaround is to use `environment`s, taking advantage of 
+the fact that these objects are, by default, internally hashed: 
 
-``` r
+```R
 EE <- new.env(hash = TRUE)  ## equivalent to new.env()
 
 (EE$A <- 1)
@@ -22,9 +39,13 @@ ls(EE)
 #[1] "A" "B"
 ```
 
-In many situations, this is a fine solution - lookups are reasonably fast, and `environment`s are highly flexible, allowing on to store virtually any type of R object (functions, lists, other environments, etc.). However, one of the major downsides to using `envinronment`s as hash tables is the inability to work with vector arguments:
+In many situations, this is a fine solution - lookups are reasonably 
+fast, and `environment`s are highly flexible, allowing on to store 
+virtually any type of R object (functions, lists, other environments, etc.).
+However, one of the major downsides to using `envinronment`s as hash tables 
+is the inability to work with vector arguments: 
 
-``` r
+```R
 EE[[c("A", "B")]]
 #Error in EE[[c("A", "B")]] : 
 #  wrong arguments for subsetting an environment
@@ -33,14 +54,14 @@ EE[c("A", "B")]
 #Error in EE[c("A", "B")] : 
 #  object of type 'environment' is not subsettable
 ```
+This is rather unfortunate considering R's overwheleming tendency 
+towards vectorized operations. 
 
-This is rather unfortunate considering R's overwheleming tendency towards vectorized operations.
+------------
 
-------------------------------------------------------------------------
+### Solution 
 
-### Solution
-
-``` r
+```R
 library(hashmap)
 
 (HH <- hashmap(c("A", "B"), c(1, 2)))
@@ -55,27 +76,31 @@ HH[[c("A", "B")]]
 #[1] 10  2
 ```
 
-It is important to note that unlike the `environment`-based solution, `hashmap` does *NOT* offer the flexibilty to store arbitrary types of objects. Any combination of the following *atomic* vector types is currently permitted:
+It is important to note that unlike the `environment`-based solution, 
+`hashmap` does *NOT* offer the flexibilty to store arbitrary types of 
+objects. Any combination of the following *atomic* vector types is 
+currently permitted: 
 
--   keys
-    -   `integer`
-    -   `numeric`
-    -   `character`
--   values
-    -   `logical`
-    -   `integer`
-    -   `numeric`
-    -   `character`
++ keys
+    + `integer`
+    + `numeric`
+    + `character`
++ values
+    + `logical`
+    + `integer`
+    + `numeric`
+    + `character`
 
-------------------------------------------------------------------------
+------------
 
-### Features
+### Features 
 
-What `hashmap` may lack in terms of flexibility, it makes up for in two important areas: performance and ease-of-use.
+What `hashmap` may lack in terms of flexibility, it makes up for in 
+two important areas: performance and ease-of-use. 
 
-#### Vectorized semantics
+#### Vectorized semantics 
 
-``` r
+```R
 # construction 
 set.seed(123)
 (H <- hashmap(LETTERS[1:10], rnorm(10)))
@@ -119,13 +144,14 @@ H$has_key("zzz")
 H[[c("a", "e", "zzz")]] <- c(10, 20, 30)
 H[[c("a", "e", "zzz")]]
 #[1] 10 20 30
+
 ```
 
-------------------------------------------------------------------------
+-----------
 
 #### Other features
 
-``` r
+```R
 H$size()
 #[1] 17
  
@@ -173,6 +199,12 @@ H
 ##          [qxdwrpblzv] => [-1.8888798168618]   
 ##          [uylwhlcqjx] => [-0.0251941830081833]
 ##                 [...] => [...]    
+
 ```
 
-------------------------------------------------------------------------
+----------
+
+
+ 
+
+
