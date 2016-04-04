@@ -2,6 +2,8 @@
 hashmap
 =======
 
+------------------------------------------------------------------------
+
 ### Motivation
 
 Unlike many programming languages, R does not implement a native hash table class. The typical workaround is to use `environment`s, taking advantage of the fact that these objects are, by default, internally hashed:
@@ -44,9 +46,9 @@ This is rather unfortunate considering R's overwhelming tendency towards vectori
 library(hashmap)
 
 (HH <- hashmap(c("A", "B"), c(1, 2)))
-##    [B] => [2]   
-##    [A] => [1]   
-##  [...] => [...]
+## (character) => (numeric)  
+##         [B] => [+2.000000]
+##         [A] => [+1.000000]
 
 (HH[["A"]] <- 10)
 #[1] 10
@@ -71,110 +73,173 @@ It is important to note that unlike the `environment`-based solution, `hashmap` 
 
 ### Features
 
-What `hashmap` may lack in terms of flexibility, it makes up for in two important areas: performance and ease-of-use.
+What `hashmap` may lack in terms of flexibility it makes up for in two important areas: performance and ease-of-use. Let's begin with the latter by looking at examples of typical uses.
 
-#### Vectorized semantics
+#### Usage
 
-``` r
-# construction 
-set.seed(123)
-(H <- hashmap(LETTERS[1:10], rnorm(10)))
-##                  [I] => [-0.686852851893526]
-##                  [H] => [-1.26506123460653] 
-##                  [F] => [1.71506498688328]  
-##                  [J] => [-0.445661970099958]
-##                  [G] => [0.460916205989202] 
-##                [...] => [...]  
+-   A `Hashmap` is created by passing a vector of keys and a vector of values to `hashmap`:
 
-# lookup
-H[[c("A", "C", "D")]]
-#[1] -0.56047565  1.55870831  0.07050839
+    ``` r
+    set.seed(123)
+    H <- hashmap(letters[1:10], rnorm(10))
+    H
+    ## (character) => (numeric)  
+    ##         [j] => [-0.445662]
+    ##         [i] => [-0.686853]
+    ##         [h] => [-1.265061]
+    ##         [g] => [+0.460916]
+    ##         [e] => [+0.129288]
+    ##         [d] => [+0.070508]
+    ##       [...] => [...] 
+    ```
 
-# equivalently
-H$find_values(c("A", "C", "D"))
-#[1] -0.56047565  1.55870831  0.07050839
+-   If the lengths of the two vectors are not equal, the longer object is truncated to the length of its counterpart, and a warning is issued:
 
-# NA for non-matching keys
-H[[c("A", "Z")]]
-#[1] -0.5604756         NA
+    ``` r
+    hashmap(letters[1:5], 1:3)
+    ## (character) => (integer)
+    ##         [c] => [3]      
+    ##         [b] => [2]      
+    ##         [a] => [1]      
+    Warning message:
+    In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
+      length(keys) != length(values)!
 
-# modification
-H[[c("a", "b", "c")]] <- c(1, 2, 3)
-H[[c("a", "b", "c")]]
-#[1] 1 2 3
+    hashmap(letters[1:3], 1:5)
+    ## (character) => (integer)
+    ##         [c] => [3]      
+    ##         [b] => [2]      
+    ##         [a] => [1]      
+    Warning message:
+    In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
+      length(keys) != length(values)!
+    ```
 
-# equivalently
-H$set_values(c("d", "e", "f"), 4:6)
-H[[c("d", "e", "f")]]
-#[1] 4 5 6
+-   Value lookup can be performed by passing a vector of lookup keys to either of `[[` or `$find_values`:
 
-# values are replaced for existing keys
-# and inserted for non-existing keys
-H[[c("a", "e")]]
-#[1] 1 5
+    ``` r
+    H[["a"]]
+    #[1] -0.5604756
 
-H$has_key("zzz")
-#[1] FALSE
+    H$find_values("b")
+    #[1] -0.2301775
 
-H[[c("a", "e", "zzz")]] <- c(10, 20, 30)
-H[[c("a", "e", "zzz")]]
-#[1] 10 20 30
-```
+    H[[c("a", "c")]]
+    #[1] -0.5604756  1.5587083
 
-------------------------------------------------------------------------
+    H$find_values(c("b", "d"))
+    #[1] -0.23017749  0.07050839
+    ```
 
-#### Other methods
+-   For non-existant lookup keys, `NA` is returned:
 
-``` r
-H$size()
-#[1] 17
- 
-H$empty()
-#[1] FALSE
- 
-H$clear()
- 
-H$size()
-#[1] 0
+    ``` r
+     H[[c("a", "A", "b")]]
+    #[1] -0.5604756         NA -0.2301775
+    ```
 
-H$empty()
-#[1] TRUE
+-   Use `$has_key` to check for the existance of individual keys:
 
-H$all_keys()
-#character(0)
-H$all_values()
-#numeric(0)
+    ``` r
+    H$has_key("a")
+    #[1] TRUE
 
-# use rehash to change class 
-# of keys or values 
-H$rehash(as.integer(1:3), letters[1:3])
+    H$has_key("A")
+    #[1] FALSE
+    ```
 
-# data() returns a named vector
-H$data()
-#  3   2   1 
-#"c" "b" "a" 
+-   Modification of key-value pairs is done using either of `[[<-` or `$set_values`. For non-existing keys, a new key-value pair will be inserted. For existing keys, the previous value will be overwritten:
 
-# unlike the venerable data.frame,
-# hashmap won't take over your  
-# console when accidentally printed 
-H$rehash(
-    replicate(10e4, {
-        paste0(sample(letters, 10, TRUE), collapse = "")
-    }),
-    rnorm(10e4)
-)
+    ``` r
+    H[[c("a", "x")]]
+    #[1] -0.5604756         NA
 
-H$size()
-#[1] 100000
+    H[[c("a", "x")]] <- c(1.5, 26.5)
+    H[[c("a", "x")]]
+    #[1]  1.5 26.5
 
-H
-##          [vmlxtdzcbe] => [-0.203635009795533] 
-##          [qixrbmpmlf] => [0.596118314610788]  
-##          [ouxarhfflk] => [-0.57885729882002]  
-##          [qxdwrpblzv] => [-1.8888798168618]   
-##          [uylwhlcqjx] => [-0.0251941830081833]
-##                 [...] => [...]    
-```
+    H$set_values(c("a", "y", "z"), c(100, 200, 300))
+    H[[c("a", "y", "z")]]
+    #[1] 100 200 300
+    ```
+
+-   Use `$size` to check the number of key-value pairs, `$empty` to check if the hash table is empty, and `$clear` to delete all existing entries:
+
+    ``` r
+    H$size()
+    #[1] 13
+
+    H$empty()
+    #[1] FALSE
+
+    H$clear()
+
+    H$empty()
+    #[1] TRUE
+
+    H$size()
+    #[1] 0
+
+    H
+    ## [empty Hashmap]
+    ```
+
+-   `$all_keys` and `$all_values` return every key and value, respectively, and `$data` returns a named vector of values, using the keys as names:
+
+    ``` r
+    H[[c("A", "B", "C")]] <- 1:3
+
+    H$all_keys()
+    #[1] "C" "B" "A"
+
+    H$all_values()
+    #[1] 3 2 1
+
+    H$data()
+    #C B A 
+    #3 2 1 
+    ```
+
+-   By default, only the first 6 key-value pairs of a `Hashmap` are printed, where `[...] => [...]` indicates that additional entries exist but are not displayed. This can be adjusted via `options()`:
+
+    ``` r
+    getOption("hashmap.max.print")
+    #[1] 6
+
+    H
+    ## (character) => (numeric)  
+    ##         [C] => [+3.000000]
+    ##         [B] => [+2.000000]
+    ##         [A] => [+1.000000]
+
+    H[[letters[1:10]]] <- rnorm(10)
+    H
+    ## (character) => (numeric)  
+    ##         [j] => [-0.472791]
+    ##         [i] => [+0.701356]
+    ##         [h] => [-1.966617]
+    ##         [g] => [+0.497850]
+    ##         [e] => [-0.555841]
+    ##         [d] => [+0.110683]
+    ##       [...] => [...]
+
+    options(hashmap.max.print = 15)
+    H
+    ## (character) => (numeric)  
+    ##         [j] => [-0.472791]
+    ##         [i] => [+0.701356]
+    ##         [h] => [-1.966617]
+    ##         [g] => [+0.497850]
+    ##         [e] => [-0.555841]
+    ##         [d] => [+0.110683]
+    ##         [c] => [+0.400772]
+    ##         [f] => [+1.786913]
+    ##         [b] => [+0.359814]
+    ##         [a] => [+1.224082]
+    ##         [C] => [+3.000000]
+    ##         [B] => [+2.000000]
+    ##         [A] => [+1.000000]
+    ```
 
 ------------------------------------------------------------------------
 
