@@ -293,7 +293,7 @@ the following obstacles:
 
 1. R, unlike C++, does not have a concept of template classes, which means that 
 one cannot simply expose, e.g. any of the STL containers, and expect R 
-to "know what to do". The naive solution to this is problem is for the developer 
+to "know what to do". The naive solution to this problem is for the developer to 
 expose several different instances of said template class. This is far from ideal 
 as it involves significant code duplication on the backend (especially for associative 
 containers, which usually have at least two template parameters), and one class 
