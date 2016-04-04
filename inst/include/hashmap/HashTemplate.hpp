@@ -35,6 +35,7 @@ public:
     typedef typename map_t::size_type size_type;
     typedef typename map_t::const_iterator const_iterator;
     typedef typename map_t::iterator iterator;
+    typedef typename map_t::hasher hasher;
 
 private:
     map_t map;
@@ -51,6 +52,7 @@ public:
             Rcpp::warning("length(keys) != length(values)!");
         }
         n = nk < nv ? nk : nv;
+        map.reserve(n);
 
         for ( ; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
@@ -61,6 +63,19 @@ public:
     size_type size() const { return map.size(); }
     bool empty() const { return map.empty(); }
     void clear() { map.clear(); }
+    size_type bucket_count() const { return map.bucket_count(); }
+
+    Rcpp::Vector<INTSXP> hash_value(const key_vec& keys) const {
+        R_xlen_t i = 0, nk = keys.size();
+        Rcpp::Vector<INTSXP> res = Rcpp::no_init_vector(nk);
+        hasher h;
+
+        for ( ; i < nk; i++) {
+            res[i] = h(extractor(keys, i));
+        }
+
+        return res;
+    }
 
     void set_values(const key_vec& keys, const value_vec& values) {
         R_xlen_t nk = keys.size(), nv = values.size(), i = 0, n;
@@ -101,6 +116,15 @@ public:
         }
 
         return res;
+    }
+
+    void erase(const key_vec& keys) {
+        R_xlen_t i = 0, n = keys.size();
+
+        for ( ; i < n; i++) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
+            map.erase(extractor(keys, i));
+        }
     }
 
     value_vec find_values(const key_vec& keys) const {

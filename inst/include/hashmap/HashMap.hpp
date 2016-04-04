@@ -37,6 +37,25 @@ private:
         }
     };
 
+    struct bucket_count_visitor : public boost::static_visitor<std::size_t> {
+        template <typename T>
+        std::size_t operator()(const T& t) const {
+            return t.bucket_count();
+        }
+    };
+
+    struct hash_value_visitor : public boost::static_visitor<SEXP> {
+        SEXP keys;
+        hash_value_visitor(SEXP keys_)
+            : keys(keys_)
+        {}
+
+        template <typename T>
+        SEXP operator()(const T& t) const {
+            return Rcpp::wrap(t.hash_value(keys));
+        }
+    };
+
     struct set_values_visitor : public boost::static_visitor<> {
         SEXP keys, values;
         set_values_visitor(SEXP keys_, SEXP values_)
@@ -60,6 +79,18 @@ private:
         template <typename T>
         SEXP operator()(const T& t) const {
             return Rcpp::wrap(t.all_values());
+        }
+    };
+
+    struct erase_visitor : public boost::static_visitor<> {
+        SEXP keys;
+        erase_visitor(SEXP keys_)
+            : keys(keys_)
+        {}
+
+        template <typename T>
+        void operator()(T& t) {
+            t.erase(keys);
         }
     };
 
@@ -211,6 +242,15 @@ public:
         boost::apply_visitor(v, variant);
     }
 
+    int bucket_count() const {
+        return boost::apply_visitor(bucket_count_visitor(), variant);
+    }
+
+    SEXP hash_value(SEXP x) const {
+        hash_value_visitor v(x);
+        return boost::apply_visitor(v, variant);
+    }
+
     void set_values(SEXP x, SEXP y) {
         set_values_visitor v(x, y);
         boost::apply_visitor(v, variant);
@@ -222,6 +262,11 @@ public:
 
     SEXP all_values() const {
         return boost::apply_visitor(all_values_visitor(), variant);
+    }
+
+    void erase(SEXP x) {
+        erase_visitor v(x);
+        boost::apply_visitor(v, variant);
     }
 
     SEXP find_values(SEXP x) const {

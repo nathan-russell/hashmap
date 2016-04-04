@@ -14,9 +14,14 @@ RCPP_MODULE(hashmap_module) {
     .method("size", &HashMap::size)
     .method("empty", &HashMap::empty)
     .method("clear", &HashMap::clear)
+    .method("bucket_count", &HashMap::bucket_count)
+
+    .method("hash_value", &HashMap::hash_value)
 
     .method("set_values", &HashMap::set_values)
     .method("[[<-", &HashMap::set_values)
+
+    .method("erase", &HashMap::erase)
 
     .method("find_values", &HashMap::find_values)
     .method("[[", &HashMap::find_values)
