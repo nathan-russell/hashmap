@@ -283,7 +283,7 @@ The key to `hashmap`'s ability to perform fast lookups and inserts is the fact t
 virtually everything is handled on the C++ level. This is achieved through 
 use of the `RCPP_MODULE` macro which generates an S4 wrapper class (`Hashmap`) 
 storing an external pointer to the underlying 
-[C++ class](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashMap.hpp). 
+[C++ class](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashMap.hpp#L15-L242). 
 Consequently, once the initial price of constructing a `Hashmap` has been paid, 
 subsequent lookups and inserts can be performed *very* quickly since the C++ 
 object is persisted between function calls. 

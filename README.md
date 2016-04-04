@@ -245,7 +245,7 @@ What `hashmap` may lack in terms of flexibility it makes up for in two important
 
 #### Implementation Overview
 
-The key to `hashmap`'s ability to perform fast lookups and inserts is the fact that virtually everything is handled on the C++ level. This is achieved through use of the `RCPP_MODULE` macro which generates an S4 wrapper class (`Hashmap`) storing an external pointer to the underlying [C++ class](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashMap.hpp). Consequently, once the initial price of constructing a `Hashmap` has been paid, subsequent lookups and inserts can be performed *very* quickly since the C++ object is persisted between function calls.
+The key to `hashmap`'s ability to perform fast lookups and inserts is the fact that virtually everything is handled on the C++ level. This is achieved through use of the `RCPP_MODULE` macro which generates an S4 wrapper class (`Hashmap`) storing an external pointer to the underlying [C++ class](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashMap.hpp#L15-L242). Consequently, once the initial price of constructing a `Hashmap` has been paid, subsequent lookups and inserts can be performed *very* quickly since the C++ object is persisted between function calls.
 
 Generally speaking, exposing C++ classes to R means dealing with one or both of the following obstacles:
 
