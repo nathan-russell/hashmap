@@ -1,6 +1,6 @@
 #ifndef hashmap__h
 #define hashmap__h
 
-#include "HashMap.hpp"
+#include "hashmap/HashMap.hpp"
 
 #endif // hashmap__h
