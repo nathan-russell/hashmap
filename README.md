@@ -2,7 +2,7 @@
 hashmap
 =======
 
-------------------------------------------------------------------------
+[![Travis-CI Build Status](https://travis-ci.org/nathan-russell/hashmap.svg?branch=master)](https://travis-ci.org/nathan-russell/hashmap)
 
 ### Motivation
 
