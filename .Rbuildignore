@@ -4,3 +4,5 @@
 ^\.travis\.yml$
 ^travis\-tool\.sh$
 ^README-.*\.png$
+^cran-comments\.md$
+NEWS\.md
