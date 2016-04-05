@@ -44,6 +44,18 @@ private:
         }
     };
 
+    struct rehash_visitor : public boost::static_visitor<> {
+        std::size_t n;
+        rehash_visitor(std::size_t n_)
+            : n(n_)
+        {}
+
+        template <typename T>
+        void operator()(T& t) {
+            t.rehash(n);
+        }
+    };
+
     struct hash_value_visitor : public boost::static_visitor<SEXP> {
         SEXP keys;
         hash_value_visitor(SEXP keys_)
@@ -56,29 +68,29 @@ private:
         }
     };
 
-    struct set_values_visitor : public boost::static_visitor<> {
+    struct insert_visitor : public boost::static_visitor<> {
         SEXP keys, values;
-        set_values_visitor(SEXP keys_, SEXP values_)
+        insert_visitor(SEXP keys_, SEXP values_)
             : keys(keys_), values(values_)
         {}
 
         template <typename T>
         void operator()(T& t) {
-            t.set_values(keys, values);
+            t.insert(keys, values);
         }
     };
 
-    struct all_keys_visitor : public boost::static_visitor<SEXP> {
+    struct keys_visitor : public boost::static_visitor<SEXP> {
         template <typename T>
         SEXP operator()(const T& t) const {
-            return Rcpp::wrap(t.all_keys());
+            return Rcpp::wrap(t.keys());
         }
     };
 
-    struct all_values_visitor : public boost::static_visitor<SEXP> {
+    struct values_visitor : public boost::static_visitor<SEXP> {
         template <typename T>
         SEXP operator()(const T& t) const {
-            return Rcpp::wrap(t.all_values());
+            return Rcpp::wrap(t.values());
         }
     };
 
@@ -94,15 +106,15 @@ private:
         }
     };
 
-    struct find_values_visitor : public boost::static_visitor<SEXP> {
+    struct find_visitor : public boost::static_visitor<SEXP> {
         SEXP keys;
-        find_values_visitor(SEXP keys_)
+        find_visitor(SEXP keys_)
             : keys(keys_)
         {}
 
         template <typename T>
         SEXP operator()(const T& t) const {
-            return Rcpp::wrap(t.find_values(keys));
+            return Rcpp::wrap(t.find(keys));
         }
     };
 
@@ -115,6 +127,18 @@ private:
         template <typename T>
         bool operator()(const T& t) const {
             return t.has_key(keys);
+        }
+    };
+
+    struct has_keys_visitor : public boost::static_visitor<SEXP> {
+        SEXP keys;
+        has_keys_visitor(SEXP keys_)
+            : keys(keys_)
+        {}
+
+        template <typename T>
+        SEXP operator()(const T& t) const {
+            return Rcpp::wrap(t.has_keys(keys));
         }
     };
 
@@ -224,7 +248,7 @@ public:
         }
     }
 
-    void rehash(SEXP x, SEXP y) {
+    void renew(SEXP x, SEXP y) {
         HashMap tmp(x, y);
         variant = tmp.variant;
     }
@@ -246,22 +270,27 @@ public:
         return boost::apply_visitor(bucket_count_visitor(), variant);
     }
 
+    void rehash(int n) {
+        rehash_visitor v(n);
+        boost::apply_visitor(v, variant);
+    }
+
     SEXP hash_value(SEXP x) const {
         hash_value_visitor v(x);
         return boost::apply_visitor(v, variant);
     }
 
-    void set_values(SEXP x, SEXP y) {
-        set_values_visitor v(x, y);
+    void insert(SEXP x, SEXP y) {
+        insert_visitor v(x, y);
         boost::apply_visitor(v, variant);
     }
 
-    SEXP all_keys() const {
-        return boost::apply_visitor(all_keys_visitor(), variant);
+    SEXP keys() const {
+        return boost::apply_visitor(keys_visitor(), variant);
     }
 
-    SEXP all_values() const {
-        return boost::apply_visitor(all_values_visitor(), variant);
+    SEXP values() const {
+        return boost::apply_visitor(values_visitor(), variant);
     }
 
     void erase(SEXP x) {
@@ -269,14 +298,18 @@ public:
         boost::apply_visitor(v, variant);
     }
 
-    SEXP find_values(SEXP x) const {
-        find_values_visitor v(x);
-        //return boost::apply_visitor(find_values_visitor(x), variant);
+    SEXP find(SEXP x) const {
+        find_visitor v(x);
         return boost::apply_visitor(v, variant);
     }
 
     bool has_key(SEXP x) const {
         has_key_visitor v(x);
+        return boost::apply_visitor(v, variant);
+    }
+
+    SEXP has_keys(SEXP x) const {
+        has_keys_visitor v(x);
         return boost::apply_visitor(v, variant);
     }
 

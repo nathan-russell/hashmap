@@ -24,8 +24,8 @@ setMethod("show", "Rcpp_Hashmap",
             n_print <- getOption("hashmap.max.print")[1]
         }
 
-        .lhs_header <- sprintf("(%s)", class(object$all_keys()))
-        .rhs_header <- sprintf("(%s)", class(object$all_values()))
+        .lhs_header <- sprintf("(%s)", class(object$keys()))
+        .rhs_header <- sprintf("(%s)", class(object$values()))
 
         .data <- head(object$data(), n_print)
 

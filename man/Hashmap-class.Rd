@@ -15,9 +15,9 @@ A \code{Hashmap} object (\code{H}) resulting from a
 
 \itemize{
 
- \item \code{all_keys()}: returns the \code{keys} of \code{H}
+ \item \code{keys()}: returns the \code{keys} of \code{H}
 
- \item \code{all_values()}: returns the \code{values} of \code{H}
+ \item \code{values()}: returns the \code{values} of \code{H}
 
  \item \code{clear()}: deletes all keys and values from \code{H}
 
@@ -28,23 +28,37 @@ A \code{Hashmap} object (\code{H}) resulting from a
      (e.g. immediately following a call to \code{clear}), else
      returns \code{FALSE}
 
- \item \code{find_values(lookup_keys)}: returns the \code{values}
+ \item \code{find(lookup_keys)}: returns the \code{values}
      associated with \code{lookup_keys} for existing key elements,
      and \code{NA} otherwise
 
- \item \code{rehash(new_keys, new_values)}: deletes current
+ \item \code{has_key(lookup_key)}: returns \code{TRUE} if
+     \code{lookup_key} exists as a key in \code{H} and
+     \code{FALSE} if it does not
+
+ \item \code{has_keys(lookup_keys)}: vectorized equivalent of
+     \code{has_key}
+
+ \item \code{rehash(n_buckets)}: for the internal hash table, sets the
+     number of buckets to at least \code{n} and the load factor to
+     less than the max load factor
+
+ \item \code{bucket_count()}: returns the current number of buckets
+     in the internal hash table
+
+ \item \code{renew(new_keys, new_values)}: deletes current
      \code{keys} and \code{values}, and reinitialize \code{H}
      with \code{new_keys} and \code{new_values}, where
      \code{new_keys} and \code{new_values} are allowed to be
      different SEXP types than the original \code{keys} and
      \code{values}
 
- \item \code{set_values(more_keys, more_values)}: adds more
+ \item \code{insert(more_keys, more_values)}: adds more
      key-value pairs to \code{H}, where existing key elements
-     (\code{intersect(H$all_keys(), more_keys)}) will be
+     (\code{intersect(H$keys(), more_keys)}) will be
      updated with the corresponding elements in \code{more_values},
      and non-existing key elements
-     \code{setdiff(H$all_keys(), more_keys)} will be inserted
+     \code{setdiff(H$keys(), more_keys)} will be inserted
      with the corresponding elements in \code{more_values}
 
  \item \code{size()}: returns the size (number of key-value pairs)
@@ -56,10 +70,10 @@ not require the use of \code{$}:
 
 \itemize{
 
- \item \code{`[[`}: equivalent to \code{find_values(lookup_keys)}
+ \item \code{`[[`}: equivalent to \code{find(lookup_keys)}
 
  \item \code{`[[<-`}: equivalent to
-     \code{set_values(more_keys, more_values)}
+     \code{insert(more_keys, more_values)}
 
 }
 }
@@ -77,14 +91,14 @@ H$empty()       #[1] FALSE
 H$size()        #[1] 10000
 
 ## necessarily
-any(duplicated(H$all_keys()))        #[1] FALSE
+any(duplicated(H$keys()))        #[1] FALSE
 
-all.equal(H[[z]], H$find_values(z))  #[1] TRUE
+all.equal(H[[z]], H$find(z))  #[1] TRUE
 
 ## hash map ordering is random
 all.equal(
     sort(H[[x]]),
-    sort(H$all_values()))  #[1] TRUE
+    sort(H$values()))  #[1] TRUE
 
 ## a named vector
 head(H$data())
@@ -95,20 +109,20 @@ all.equal(
     unname(head(H$data())))
 
 ## setting values
-H2 <- hashmap(H$all_keys(), H$all_values())
+H2 <- hashmap(H$keys(), H$values())
 
 all.equal(
-    sort(H[[H2$all_keys()]]),
-    sort(H2[[H$all_keys()]]))   #[1] TRUE
+    sort(H[[H2$keys()]]),
+    sort(H2[[H$keys()]]))   #[1] TRUE
 
-H$set_values("A", round(pi, 5))
+H$values("A", round(pi, 5))
 
 H2[["A"]] <- round(pi, 5)
 
 ## still true
 all.equal(
-    sort(H[[H2$all_keys()]]),
-    sort(H2[[H$all_keys()]]))
+    sort(H[[H2$keys()]]),
+    sort(H2[[H$keys()]]))
 
 ## changing SEXPTYPE of key or value must be explicit
 H3 <- hashmap(c("A", "B", "C"), c(1, 2, 3))
@@ -122,7 +136,7 @@ H3$size()     #[1] 0
 class(try(H3[["D"]] <- "text", silent = TRUE)) #[1] "try-error"
 
 ## okay
-H3$rehash("D", "text")
+H3$renew("D", "text")
 H3$size()     #[1] 1
 }
 

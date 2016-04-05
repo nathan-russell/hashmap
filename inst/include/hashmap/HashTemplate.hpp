@@ -45,9 +45,9 @@ private:
 
 public:
     HashTemplate() {}
-    HashTemplate(const key_vec& keys, const value_vec& values)
+    HashTemplate(const key_vec& keys_, const value_vec& values_)
     {
-        R_xlen_t nk = keys.size(), nv = values.size(), i = 0, n;
+        R_xlen_t nk = keys_.size(), nv = values_.size(), i = 0, n;
         if (nk != nv) {
             Rcpp::warning("length(keys) != length(values)!");
         }
@@ -56,7 +56,7 @@ public:
 
         for ( ; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
-            map[extractor(keys, i)] = extractor(values, i);
+            map[extractor(keys_, i)] = extractor(values_, i);
         }
     }
 
@@ -64,22 +64,23 @@ public:
     bool empty() const { return map.empty(); }
     void clear() { map.clear(); }
     size_type bucket_count() const { return map.bucket_count(); }
+    void rehash(size_type n) { map.rehash(n); }
 
-    Rcpp::Vector<INTSXP> hash_value(const key_vec& keys) const {
-        R_xlen_t i = 0, nk = keys.size();
+    Rcpp::Vector<INTSXP> hash_value(const key_vec& keys_) const {
+        R_xlen_t i = 0, nk = keys_.size();
         Rcpp::Vector<INTSXP> res = Rcpp::no_init_vector(nk);
         hasher h;
 
         for ( ; i < nk; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
-            res[i] = h(extractor(keys, i));
+            res[i] = h(extractor(keys_, i));
         }
 
         return res;
     }
 
-    void set_values(const key_vec& keys, const value_vec& values) {
-        R_xlen_t nk = keys.size(), nv = values.size(), i = 0, n;
+    void insert(const key_vec& keys_, const value_vec& values_) {
+        R_xlen_t nk = keys_.size(), nv = values_.size(), i = 0, n;
         if (nk != nv) {
             Rcpp::warning("length(keys) != length(values)!");
         }
@@ -87,15 +88,15 @@ public:
 
         for ( ; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
-            map[extractor(keys, i)] = extractor(values, i);
+            map[extractor(keys_, i)] = extractor(values_, i);
         }
     }
 
-    void set_values(SEXP keys, SEXP values) {
-        set_values(Rcpp::as<key_vec>(keys), Rcpp::as<value_vec>(values));
+    void insert(SEXP keys_, SEXP values_) {
+        insert(Rcpp::as<key_vec>(keys_), Rcpp::as<value_vec>(values_));
     }
 
-    key_vec all_keys() const {
+    key_vec keys() const {
         key_vec res(map.size());
         const_iterator first = map.begin(), last = map.end();
 
@@ -107,7 +108,7 @@ public:
         return res;
     }
 
-    value_vec all_values() const {
+    value_vec values() const {
         value_vec res(map.size());
         const_iterator first = map.begin(), last = map.end();
 
@@ -119,23 +120,23 @@ public:
         return res;
     }
 
-    void erase(const key_vec& keys) {
-        R_xlen_t i = 0, n = keys.size();
+    void erase(const key_vec& keys_) {
+        R_xlen_t i = 0, n = keys_.size();
 
         for ( ; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
-            map.erase(extractor(keys, i));
+            map.erase(extractor(keys_, i));
         }
     }
 
-    value_vec find_values(const key_vec& keys) const {
-        R_xlen_t i = 0, n = keys.size();
+    value_vec find(const key_vec& keys_) const {
+        R_xlen_t i = 0, n = keys_.size();
         value_vec res(n);
         const_iterator last = map.end();
 
         for ( ; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
-            const_iterator pos = map.find(extractor(keys, i));
+            const_iterator pos = map.find(extractor(keys_, i));
             if (pos != last) {
                 res[i] = pos->second;
             } else {
@@ -146,16 +147,33 @@ public:
         return res;
     }
 
-    value_vec find_values(SEXP keys) const {
-        return find_values(Rcpp::as<key_vec>(keys));
+    value_vec find(SEXP keys_) const {
+        return find(Rcpp::as<key_vec>(keys_));
     }
 
-    bool has_key(const key_vec& keys) const {
-        return map.find(extractor(keys, 0)) != map.end();
+    bool has_key(const key_vec& keys_) const {
+        return map.find(extractor(keys_, 0)) != map.end();
     }
 
-    bool has_key(SEXP keys) const {
-        return has_key(Rcpp::as<key_vec>(keys));
+    bool has_key(SEXP keys_) const {
+        return has_key(Rcpp::as<key_vec>(keys_));
+    }
+
+    Rcpp::Vector<LGLSXP> has_keys(const key_vec& keys_) const {
+        R_xlen_t i = 0, n = keys_.size();
+        Rcpp::Vector<LGLSXP> res = Rcpp::no_init_vector(n);
+        const_iterator last = map.end();
+
+        for ( ; i < n; i++) {
+            res[i] = (map.find(extractor(keys_, i)) != last) ?
+                true : false;
+        }
+
+        return res;
+    }
+
+    Rcpp::Vector<LGLSXP> has_keys(SEXP keys_) const {
+        return has_keys(Rcpp::as<key_vec>(keys_));
     }
 
     value_vec data() const {

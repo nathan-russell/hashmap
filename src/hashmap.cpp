@@ -15,24 +15,26 @@ RCPP_MODULE(hashmap_module) {
     .method("empty", &HashMap::empty)
     .method("clear", &HashMap::clear)
     .method("bucket_count", &HashMap::bucket_count)
+    .method("rehash", &HashMap::rehash)
 
     .method("hash_value", &HashMap::hash_value)
 
-    .method("set_values", &HashMap::set_values)
-    .method("[[<-", &HashMap::set_values)
+    .method("insert", &HashMap::insert)
+    .method("[[<-", &HashMap::insert)
 
     .method("erase", &HashMap::erase)
 
-    .method("find_values", &HashMap::find_values)
-    .method("[[", &HashMap::find_values)
+    .method("find", &HashMap::find)
+    .method("[[", &HashMap::find)
 
     .method("has_key", &HashMap::has_key)
+    .method("has_keys", &HashMap::has_keys)
 
-    .method("all_keys", &HashMap::all_keys)
-    .method("all_values", &HashMap::all_values)
+    .method("keys", &HashMap::keys)
+    .method("values", &HashMap::values)
     .method("data", &HashMap::data)
 
-    .method("rehash", &HashMap::rehash)
+    .method("renew", &HashMap::renew)
 
     ;
 }
