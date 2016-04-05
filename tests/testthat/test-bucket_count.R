@@ -1,5 +1,5 @@
 library(testthat)
-context("Basic functionality")
+context("Basic bucket_count")
 
 hashmap_list <- function(n = 20) {
     if (!require(hashmap)) {

@@ -1,5 +1,5 @@
 library(testthat)
-context("Basic functionality")
+context("Basic find")
 
 hashmap_list <- function(n = 20) {
     if (!require(hashmap)) {
@@ -37,4 +37,19 @@ xx <- lapply(1:length(test_list), function(x) {
         expect_equal(test_list[[x]]$find(test_list[[x]]$keys()),
                      test_list[[x]]$values())
     })
+})
+
+test_that("missing integer key returns NA", {
+    h <- hashmap(1:5, rnorm(5))
+    expect_true(is.na(h$find(6)))
+})
+
+test_that("missing numeric key returns NA", {
+    h <- hashmap(1:5 + 0.5, rnorm(5))
+    expect_true(is.na(h$find(6.5)))
+})
+
+test_that("missing character key returns NA", {
+    h <- hashmap(letters[1:5], rnorm(5))
+    expect_true(is.na(h$find(letters[6])))
 })
