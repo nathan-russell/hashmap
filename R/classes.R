@@ -33,7 +33,7 @@ setMethod("show", "Rcpp_Hashmap",
 
         if (grepl("numeric", .lhs_header)) {
             .keys <- sprintf("[%+f]",
-                round(names(.data), getOption("digits"))
+                round(as.numeric(names(.data)), getOption("digits"))
             )
         } else {
             .keys <- sprintf("[%s]", as.character(names(.data)))

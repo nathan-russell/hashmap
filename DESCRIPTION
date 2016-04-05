@@ -19,7 +19,8 @@ LinkingTo: Rcpp,
     BH
 Suggests:
     devtools,
-    microbenchmark
+    microbenchmark,
+    testthat
 Depends:
     methods
 RcppModules: Hashmap

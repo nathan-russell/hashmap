@@ -79,7 +79,7 @@ It is important to note that unlike the `environment`-based solution, `hashmap` 
 
 ### Features
 
-What `hashmap` may lack in terms of flexibility it makes up for in two important areas: performance and ease-of-use. Let's begin with the latter by looking at examples of typical uses.
+What `hashmap` may lack in terms of flexibility it makes up for in two important areas: performance and ease-of-use. Let's begin with the latter by looking at some basic examples.
 
 #### Usage
 
@@ -144,7 +144,7 @@ What `hashmap` may lack in terms of flexibility it makes up for in two important
     #[1] -0.5604756         NA -0.2301775
     ```
 
--   Use `$has_key` to check for the existance of individual keys, or `$has_keys` for a vector of keys::
+-   Use `$has_key` to check for the existance of individual keys, or `$has_keys` for a vector of keys:
 
     ``` r
     H$has_key("a")
