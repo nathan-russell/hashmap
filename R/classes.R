@@ -9,6 +9,8 @@
 #' @include hashmap.R
 NULL
 
+setClass("Rcpp_Hashmap", contains = "C++Object")
+
 setMethod("show", "Rcpp_Hashmap",
     function(object) {
 

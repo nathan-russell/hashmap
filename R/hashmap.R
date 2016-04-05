@@ -48,7 +48,7 @@
 
 #' @importFrom methods new
 
-Rcpp::loadModule("hashmap_module", TRUE)
+Rcpp::loadModule("Hashmap", TRUE)
 
 #' @export hashmap
 hashmap <- function(keys, values, ...) {
