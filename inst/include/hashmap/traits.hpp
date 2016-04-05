@@ -32,6 +32,20 @@ inline std::string get_na<std::string>() {
     return "NA";
 }
 
+// fix me
+template <int RTYPE>
+inline Rcpp::Vector<RTYPE>
+hashmap_no_init_vector(R_xlen_t n) {
+    return Rcpp::no_init_vector(n);
+}
+
+// fix me
+template <>
+inline Rcpp::Vector<STRSXP>
+hashmap_no_init_vector<STRSXP>(R_xlen_t n) {
+    return Rcpp::Vector<STRSXP>(n);
+}
+
 } // traits
 } // hashmap
 

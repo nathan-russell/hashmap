@@ -297,7 +297,7 @@ The key to `hashmap`'s ability to perform fast lookups and inserts is the fact t
 virtually everything is handled on the C++ level. This is achieved through 
 use of the `RCPP_MODULE` macro which generates an S4 wrapper class (`Hashmap`) 
 storing an external pointer to the underlying 
-[C++ class](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashMap.hpp#L15-L242). 
+[C++ class](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashMap.hpp). 
 Consequently, once the initial price of constructing a `Hashmap` has been paid, 
 subsequent lookups and inserts can be performed *very* quickly since the C++ 
 object is persisted between function calls. 
@@ -331,7 +331,7 @@ provided by the [Boost C++ Libraries](http://www.boost.org/), which are
 conveniently made available through the 
 [R package BH](https://github.com/eddelbuettel/bh). To address the second 
 obstacle, `hashmap` employs a templated wrapper class 
-[HashTemplate](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashTemplate.hpp#L22-L174), leveraging the functionality of the C++98-compliant 
+[HashTemplate](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashTemplate.hpp), leveraging the functionality of the C++98-compliant 
 `boost::unordered_map` and `boost::hash` (in lieu of C++11's 
 `std::unordered_map` and `std::hash`). Subsequently, the first problem can 
 then be solved by encapsulating instances of `HashTemplate` within a 

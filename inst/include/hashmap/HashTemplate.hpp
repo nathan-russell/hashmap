@@ -43,16 +43,34 @@ private:
     key_t key_na() const { return traits::get_na<key_t>(); }
     value_t value_na() const { return traits::get_na<value_t>(); }
 
+    /*mutable*/ bool keys_cached_;
+    /*mutable*/ bool values_cached_;
+
+    /*mutable*/ key_vec kvec;
+    /*mutable*/ value_vec vvec;
+
 public:
-    HashTemplate() {}
+    HashTemplate()
+        : keys_cached_(false), values_cached_(false)
+    {
+        kvec = key_vec(0);
+        vvec = value_vec(0);
+    }
+
     HashTemplate(const key_vec& keys_, const value_vec& values_)
+        : keys_cached_(false), values_cached_(false)
     {
         R_xlen_t nk = keys_.size(), nv = values_.size(), i = 0, n;
         if (nk != nv) {
             Rcpp::warning("length(keys) != length(values)!");
         }
         n = nk < nv ? nk : nv;
+
         map.reserve(n);
+        //kvec = Rcpp::no_init_vector(n);
+        //vvec = Rcpp::no_init_vector(n);
+        kvec = key_vec(n);
+        vvec = value_vec(n);
 
         for ( ; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
@@ -60,9 +78,29 @@ public:
         }
     }
 
+//     HashTemplate& operator=(const HashTemplate& other) {
+//         if (this == &other) return *this;
+//
+//         map = other.map;
+//         values_cached_ = other.values_cached_;
+//         keys_cached_ = other.keys_cached_;
+//         kvec = Rcpp::clone(other.kvec);
+//         vvec = Rcpp::clone(other.vvec);
+//
+//         return *this;
+//     }
+
     size_type size() const { return map.size(); }
     bool empty() const { return map.empty(); }
-    void clear() { map.clear(); }
+    bool keys_cached() const { return keys_cached_; }
+    bool values_cached() const { return values_cached_; }
+
+    void clear() {
+        map.clear();
+        keys_cached_ = false;
+        values_cached_ = false;
+    }
+
     size_type bucket_count() const { return map.bucket_count(); }
     void rehash(size_type n) { map.rehash(n); }
 
@@ -85,6 +123,8 @@ public:
             Rcpp::warning("length(keys) != length(values)!");
         }
         n = nk < nv ? nk : nv;
+        keys_cached_ = false;
+        values_cached_ = false;
 
         for ( ; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
@@ -97,27 +137,63 @@ public:
     }
 
     key_vec keys() const {
-        key_vec res(map.size());
+        if (keys_cached_) return kvec;
+
         const_iterator first = map.begin(), last = map.end();
+        key_vec res(map.size());
 
         for (R_xlen_t i = 0; first != last; ++first) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             res[i++] = first->first;
         }
-
         return res;
     }
 
     value_vec values() const {
-        value_vec res(map.size());
+        if (values_cached_) return vvec;
+
         const_iterator first = map.begin(), last = map.end();
+        value_vec res(map.size());
 
         for (R_xlen_t i = 0; first != last; ++first) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             res[i++] = first->second;
         }
-
         return res;
+    }
+
+    void cache_keys() {
+        if (keys_cached_) return;
+
+        R_xlen_t i = 0, n = map.size();
+        if (kvec.size() != n) {
+            //kvec = Rcpp::no_init_vector(n);
+            kvec = key_vec(n);
+        }
+
+        const_iterator first = map.begin(), last = map.end();
+        for ( ; first != last; ++first) {
+            kvec[i++] = first->first;
+        }
+
+        keys_cached_ = true;
+    }
+
+    void cache_values() {
+        if (values_cached_) return;
+
+        R_xlen_t i = 0, n = map.size();
+        if (vvec.size() != n) {
+            //vvec = Rcpp::no_init_vector(n);
+            vvec = value_vec(n);
+        }
+
+        const_iterator first = map.begin(), last = map.end();
+        for ( ; first != last; ++first) {
+            vvec[i++] = first->second;
+        }
+
+        values_cached_ = true;
     }
 
     void erase(const key_vec& keys_) {
@@ -127,6 +203,9 @@ public:
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             map.erase(extractor(keys_, i));
         }
+
+        keys_cached_ = false;
+        values_cached_ = false;
     }
 
     value_vec find(const key_vec& keys_) const {
@@ -140,7 +219,8 @@ public:
             if (pos != last) {
                 res[i] = pos->second;
             } else {
-                res[i] = value_na();
+                //res[i] = value_na();
+                res[i] = Rcpp::traits::get_na<value_rtype>();
             }
         }
 
@@ -177,6 +257,12 @@ public:
     }
 
     value_vec data() const {
+        if (values_cached_ && keys_cached_) {
+            value_vec res(vvec);
+            res.names() = kvec;
+            return res;
+        }
+
         R_xlen_t i = 0, n = map.size();
 
         value_vec res(n);

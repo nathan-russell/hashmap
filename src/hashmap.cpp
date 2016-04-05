@@ -32,6 +32,12 @@ RCPP_MODULE(Hashmap) {
     .method("values", &HashMap::values)
     .method("data", &HashMap::data)
 
+
+    .method("keys_cached", &HashMap::keys_cached)
+    .method("values_cached", &HashMap::values_cached)
+    .method("cache_keys", &HashMap::cache_keys)
+    .method("cache_values", &HashMap::cache_values)
+
     .method("renew", &HashMap::renew)
 
     ;

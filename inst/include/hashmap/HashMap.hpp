@@ -30,6 +30,20 @@ private:
         }
     };
 
+    struct keys_cached_visitor : public boost::static_visitor<bool> {
+        template <typename T>
+        bool operator()(const T& t) const {
+            return t.keys_cached();
+        }
+    };
+
+    struct values_cached_visitor : public boost::static_visitor<bool> {
+        template <typename T>
+        bool operator()(const T& t) const {
+            return t.values_cached();
+        }
+    };
+
     struct clear_visitor : public boost::static_visitor<> {
         template <typename T>
         void operator()(T& t) {
@@ -91,6 +105,20 @@ private:
         template <typename T>
         SEXP operator()(const T& t) const {
             return Rcpp::wrap(t.values());
+        }
+    };
+
+    struct cache_keys_visitor : public boost::static_visitor<> {
+        template <typename T>
+        void operator()(T& t) {
+            t.cache_keys();
+        }
+    };
+
+    struct cache_values_visitor : public boost::static_visitor<> {
+        template <typename T>
+        void operator()(T& t) {
+            t.cache_values();
         }
     };
 
@@ -261,6 +289,14 @@ public:
         return boost::apply_visitor(empty_visitor(), variant);
     }
 
+    bool keys_cached() const {
+        return boost::apply_visitor(keys_cached_visitor(), variant);
+    }
+
+    bool values_cached() const {
+        return boost::apply_visitor(values_cached_visitor(), variant);
+    }
+
     void clear() {
         clear_visitor v;
         boost::apply_visitor(v, variant);
@@ -285,12 +321,26 @@ public:
         boost::apply_visitor(v, variant);
     }
 
-    SEXP keys() const {
-        return boost::apply_visitor(keys_visitor(), variant);
+    SEXP keys(/*bool cache = false*/) const {
+        //keys_visitor v(cache);
+        keys_visitor v;
+        return boost::apply_visitor(v, variant);
     }
 
-    SEXP values() const {
-        return boost::apply_visitor(values_visitor(), variant);
+    SEXP values(/*bool cache = false*/) const {
+        //values_visitor v(cache);
+        values_visitor v;
+        return boost::apply_visitor(v, variant);
+    }
+
+    void cache_keys() {
+        cache_keys_visitor v;
+        boost::apply_visitor(v, variant);
+    }
+
+    void cache_values() {
+        cache_values_visitor v;
+        boost::apply_visitor(v, variant);
     }
 
     void erase(SEXP x) {
