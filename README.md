@@ -2,7 +2,7 @@
 hashmap
 =======
 
-[![Travis-CI Build Status](https://travis-ci.org/nathan-russell/hashmap.svg?branch=master)](https://travis-ci.org/nathan-russell/hashmap) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Travis-CI Build Status](https://travis-ci.org/nathan-russell/hashmap.svg?branch=master)](https://travis-ci.org/nathan-russell/hashmap) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/hashmap)](http://cran.r-project.org/package=hashmap)
 
 ### Motivation
 
