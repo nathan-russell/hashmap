@@ -115,7 +115,7 @@ all.equal(
     sort(H[[H2$keys()]]),
     sort(H2[[H$keys()]]))   #[1] TRUE
 
-H$values("A", round(pi, 5))
+H$insert("A", round(pi, 5))
 
 H2[["A"]] <- round(pi, 5)
 
