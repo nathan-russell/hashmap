@@ -71,6 +71,7 @@ public:
         hasher h;
 
         for ( ; i < nk; i++) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
             res[i] = h(extractor(keys, i));
         }
 
