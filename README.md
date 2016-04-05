@@ -2,7 +2,7 @@
 hashmap
 =======
 
-[![Travis-CI Build Status](https://travis-ci.org/nathan-russell/hashmap.svg?branch=master)](https://travis-ci.org/nathan-russell/hashmap)
+[![Travis-CI Build Status](https://travis-ci.org/nathan-russell/hashmap.svg?branch=master)](https://travis-ci.org/nathan-russell/hashmap) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 ### Motivation
 
