@@ -173,6 +173,7 @@ public:
 
         const_iterator first = map.begin(), last = map.end();
         for ( ; first != last; ++first) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
             kvec[i++] = first->first;
         }
 
@@ -190,6 +191,7 @@ public:
 
         const_iterator first = map.begin(), last = map.end();
         for ( ; first != last; ++first) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
             vvec[i++] = first->second;
         }
 
@@ -245,6 +247,7 @@ public:
         const_iterator last = map.end();
 
         for ( ; i < n; i++) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
             res[i] = (map.find(extractor(keys_, i)) != last) ?
                 true : false;
         }
