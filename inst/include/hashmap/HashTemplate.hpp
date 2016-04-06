@@ -49,9 +49,13 @@ private:
     /*mutable*/ key_vec kvec;
     /*mutable*/ value_vec vvec;
 
+    mutable bool date_keys;
+    mutable bool date_values;
+
 public:
     HashTemplate()
-        : keys_cached_(false), values_cached_(false)
+        : keys_cached_(false), values_cached_(false),
+          date_keys(false), date_values(false)
     {
         kvec = key_vec(0);
         vvec = value_vec(0);
@@ -76,6 +80,9 @@ public:
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             map[extractor(keys_, i)] = extractor(values_, i);
         }
+
+        date_keys = Rf_inherits(keys_, "Date");
+        date_values = Rf_inherits(values_, "Date");
     }
 
 //     HashTemplate& operator=(const HashTemplate& other) {
@@ -146,6 +153,8 @@ public:
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             res[i++] = first->first;
         }
+
+        if (date_keys) res.attr("class") = "Date";
         return res;
     }
 
@@ -159,6 +168,8 @@ public:
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             res[i++] = first->second;
         }
+
+        if (date_values) res.attr("class") = "Date";
         return res;
     }
 
@@ -178,6 +189,7 @@ public:
         }
 
         keys_cached_ = true;
+        if (date_keys) kvec.attr("class") = "Date";
     }
 
     void cache_values() {
@@ -196,6 +208,7 @@ public:
         }
 
         values_cached_ = true;
+        if (date_values) vvec.attr("class") = "Date";
     }
 
     void erase(const key_vec& keys_) {
@@ -226,6 +239,7 @@ public:
             }
         }
 
+        if (date_values) res.attr("class") = "Date";
         return res;
     }
 
@@ -284,6 +298,9 @@ public:
         PROTECT(snames = Rf_coerceVector(knames, STRSXP));
         Rcpp::Vector<STRSXP> names(snames);
         UNPROTECT(1);
+
+        if (date_keys) names.attr("class") = "Date";
+        if (date_values) res.attr("class") = "Date";
 
         res.names() = names;
         return res;
