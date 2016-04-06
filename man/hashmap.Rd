@@ -7,13 +7,10 @@
 hashmap(keys, values, ...)
 }
 \arguments{
-\item{keys}{an atomic vector of type \code{integer},
-     \code{numeric}, or \code{character} representing
-     the lookup keys}
+\item{keys}{an atomic vector representing lookup keys}
 
-\item{values}{an atomic vector of type \code{integer},
-     \code{numeric}, \code{character}, or \code{logical}
-     representing the corresponding lookup values}
+\item{values}{an atomic vector of values associated with \code{keys}
+     in a pair-wise manner}
 
 \item{...}{other arguments passed to \code{new} when constructing
      the \code{Hashmap} instance}
@@ -25,7 +22,41 @@ a \code{Hashmap} object
 Create a new \code{Hashmap} instance
 }
 \details{
-TODO
+The following atomic vector types are currently supported for
+ \code{keys}:
+
+ \itemize{
+
+     \item \code{integer}
+
+     \item \code{numeric}
+
+     \item \code{character}
+
+     \item \code{Date}
+
+     \item \code{POSIXct}
+
+ }
+
+ The following atomic vector types are currently supported for
+ \code{values}:
+
+ \itemize{
+
+     \item \code{logical}
+
+     \item \code{integer}
+
+     \item \code{numeric}
+
+     \item \code{character}
+
+     \item \code{Date}
+
+     \item \code{POSIXct}
+
+ }
 }
 \examples{
 x <- replicate(10e3,

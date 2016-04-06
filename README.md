@@ -69,11 +69,15 @@ It is important to note that unlike the `environment`-based solution, `hashmap` 
     -   `integer`
     -   `numeric`
     -   `character`
+    -   `Date`
+    -   `POSIXct`
 -   values
     -   `logical`
     -   `integer`
     -   `numeric`
     -   `character`
+    -   `Date`
+    -   `POSIXct`
 
 ------------------------------------------------------------------------
 

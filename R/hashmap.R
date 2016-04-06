@@ -7,20 +7,51 @@
 #'
 #' @usage hashmap(keys, values, ...)
 #'
-#' @param keys an atomic vector of type \code{integer},
-#'      \code{numeric}, or \code{character} representing
-#'      the lookup keys
+#' @param keys an atomic vector representing lookup keys
 #'
-#' @param values an atomic vector of type \code{integer},
-#'      \code{numeric}, \code{character}, or \code{logical}
-#'      representing the corresponding lookup values
+#' @param values an atomic vector of values associated with \code{keys}
+#'      in a pair-wise manner
 #'
 #' @param ... other arguments passed to \code{new} when constructing
 #'      the \code{Hashmap} instance
 #'
 #' @return a \code{Hashmap} object
 #'
-#' @details TODO
+#' @details The following atomic vector types are currently supported for
+#'  \code{keys}:
+#'
+#'  \itemize{
+#'
+#'      \item \code{integer}
+#'
+#'      \item \code{numeric}
+#'
+#'      \item \code{character}
+#'
+#'      \item \code{Date}
+#'
+#'      \item \code{POSIXct}
+#'
+#'  }
+#'
+#'  The following atomic vector types are currently supported for
+#'  \code{values}:
+#'
+#'  \itemize{
+#'
+#'      \item \code{logical}
+#'
+#'      \item \code{integer}
+#'
+#'      \item \code{numeric}
+#'
+#'      \item \code{character}
+#'
+#'      \item \code{Date}
+#'
+#'      \item \code{POSIXct}
+#'
+#'  }
 #'
 #' @seealso \code{\link{Hashmap}} for a more detailed
 #'      discussion of available methods

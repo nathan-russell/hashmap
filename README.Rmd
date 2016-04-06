@@ -96,11 +96,15 @@ currently permitted:
     + `integer`
     + `numeric`
     + `character`
+    + `Date` 
+    + `POSIXct`
 + values
     + `logical`
     + `integer`
     + `numeric`
     + `character`
+    + `Date`
+    + `POSIXct`
 
 ------------
 
