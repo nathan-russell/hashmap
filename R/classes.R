@@ -25,32 +25,36 @@ setMethod("show", "Rcpp_Hashmap",
         } else {
             n_print <- getOption("hashmap.max.print")[1]
         }
+        sz <- object$size()
 
-        .lhs_header <- sprintf("(%s)", class(object$keys()))
-        .rhs_header <- sprintf("(%s)", class(object$values()))
+        .keys <- object$keys()[seq_len(min(sz, n_print))]
+        .values <- object$values()[seq_len(min(sz, n_print))]
 
-        .data <- head(object$data(), n_print)
 
-        if (grepl("numeric", .lhs_header)) {
+        .lhs_header <- sprintf("(%s)", class(.keys)[1])
+        .rhs_header <- sprintf("(%s)", class(.values)[1])
+
+        #.data <- head(object$data(), n_print)
+
+        if (is.numeric(.keys)) {
             .keys <- sprintf("[%+f]",
-                round(as.numeric(names(.data)), getOption("digits"))
-            )
+                round(.keys, getOption("digits")))
         } else {
-            .keys <- sprintf("[%s]", as.character(names(.data)))
+            .keys <- sprintf("[%s]", .keys)
         }
 
-        if (grepl("numeric", .rhs_header)) {
+        if (is.numeric(.values)) {
             .values <- sprintf("[%+f]",
-                round(unname(.data), getOption("digits"))
+                round(.values, getOption("digits"))
             )
         } else {
-            .values <- sprintf("[%s]", as.character(unname(.data)))
+            .values <- sprintf("[%s]", .values)
         }
 
         .lhs_width <- max(c(nchar(.lhs_header), nchar(.keys)))
         .rhs_width <- max(c(nchar(.rhs_header), nchar(.values)))
 
-        if (object$size() > n_print) {
+        if (sz > n_print) {
             .txt <- sprintf(
                 "## %s => %s",
                 formatC(c(.lhs_header, .keys, "[...]"),

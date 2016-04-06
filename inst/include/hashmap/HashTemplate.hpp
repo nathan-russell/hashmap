@@ -52,17 +52,41 @@ private:
     mutable bool date_keys;
     mutable bool date_values;
 
+    struct posix_t {
+        bool is;
+        Rcpp::RObject tz;
+
+        template <int RTYPE>
+        posix_t(const Rcpp::Vector<RTYPE>& x)
+            : is(Rf_inherits(x, "POSIXt")),
+              tz(R_NilValue)
+        {
+            if (!is) return;
+            tz = Rf_isNull(x.attr("tzone")) ?
+                Rcpp::wrap("UTC") : x.attr("tzone");
+        }
+
+        posix_t()
+            : is(false), tz(R_NilValue)
+        {}
+    };
+
+    posix_t posix_keys;
+    posix_t posix_values;
+
 public:
     HashTemplate()
         : keys_cached_(false), values_cached_(false),
-          date_keys(false), date_values(false)
+          date_keys(false), date_values(false),
+          posix_keys(posix_t()), posix_values(posix_t())
     {
         kvec = key_vec(0);
         vvec = value_vec(0);
     }
 
     HashTemplate(const key_vec& keys_, const value_vec& values_)
-        : keys_cached_(false), values_cached_(false)
+        : keys_cached_(false), values_cached_(false),
+          posix_keys(keys_), posix_values(values_)
     {
         R_xlen_t nk = keys_.size(), nv = values_.size(), i = 0, n;
         if (nk != nv) {
@@ -154,7 +178,14 @@ public:
             res[i++] = first->first;
         }
 
-        if (date_keys) res.attr("class") = "Date";
+        if (date_keys) {
+            res.attr("class") = "Date";
+        } else if (posix_keys.is) {
+            res.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            res.attr("tzone") = posix_keys.tz;
+        }
+
         return res;
     }
 
@@ -169,7 +200,14 @@ public:
             res[i++] = first->second;
         }
 
-        if (date_values) res.attr("class") = "Date";
+        if (date_values) {
+            res.attr("class") = "Date";
+        } else if (posix_values.is) {
+            res.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            res.attr("tzone") = posix_values.tz;
+        }
+
         return res;
     }
 
@@ -189,7 +227,14 @@ public:
         }
 
         keys_cached_ = true;
-        if (date_keys) kvec.attr("class") = "Date";
+
+        if (date_keys) {
+            kvec.attr("class") = "Date";
+        } else if (posix_keys.is) {
+            kvec.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            kvec.attr("tzone") = posix_keys.tz;
+        }
     }
 
     void cache_values() {
@@ -208,7 +253,14 @@ public:
         }
 
         values_cached_ = true;
-        if (date_values) vvec.attr("class") = "Date";
+
+        if (date_values) {
+            vvec.attr("class") = "Date";
+        } else if (posix_values.is) {
+            vvec.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            vvec.attr("tzone") = posix_values.tz;
+        }
     }
 
     void erase(const key_vec& keys_) {
@@ -239,7 +291,14 @@ public:
             }
         }
 
-        if (date_values) res.attr("class") = "Date";
+        if (date_values) {
+            res.attr("class") = "Date";
+        } else if (posix_values.is) {
+            res.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            res.attr("tzone") = posix_values.tz;
+        }
+
         return res;
     }
 
@@ -294,13 +353,28 @@ public:
             ++i;
         }
 
+        if (date_keys) {
+            knames.attr("class") = "Date";
+        } else if (posix_keys.is) {
+            knames.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            knames.attr("tzone") = posix_keys.tz;
+        }
+
         SEXP snames;
         PROTECT(snames = Rf_coerceVector(knames, STRSXP));
         Rcpp::Vector<STRSXP> names(snames);
         UNPROTECT(1);
 
-        if (date_keys) names.attr("class") = "Date";
-        if (date_values) res.attr("class") = "Date";
+        //if (date_keys) names.attr("class") = "Date";
+
+        if (date_values) {
+            res.attr("class") = "Date";
+        } else if (posix_values.is) {
+            res.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            res.attr("tzone") = posix_values.tz;
+        }
 
         res.names() = names;
         return res;
