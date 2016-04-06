@@ -103,6 +103,7 @@ currently permitted:
     + `integer`
     + `numeric`
     + `character`
+    + `complex`
     + `Date`
     + `POSIXct`
 

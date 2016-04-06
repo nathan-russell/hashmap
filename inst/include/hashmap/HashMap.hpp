@@ -7,9 +7,9 @@
 namespace hashmap {
 
 typedef boost::variant<
-    ss_hash, sd_hash, si_hash, sb_hash,
-    dd_hash, ds_hash, di_hash, db_hash,
-    ii_hash, is_hash, id_hash, ib_hash
+    ss_hash, sd_hash, si_hash, sb_hash, sx_hash,
+    dd_hash, ds_hash, di_hash, db_hash, dx_hash,
+    ii_hash, is_hash, id_hash, ib_hash, ix_hash
 > variant_hash;
 
 class HashMap {
@@ -202,8 +202,13 @@ public:
                                           Rcpp::as<Rcpp::LogicalVector>(y));
                         break;
                     }
+                    case CPLXSXP: {
+                        variant = ix_hash(Rcpp::as<Rcpp::IntegerVector>(x),
+                                          Rcpp::as<Rcpp::ComplexVector>(y));
+                        break;
+                    }
                     default: {
-                        Rcpp::stop("Invalid value_type!");
+                        Rcpp::stop("Invalid value type!");
                         break;
                     }
                 }
@@ -232,8 +237,13 @@ public:
                                           Rcpp::as<Rcpp::LogicalVector>(y));
                         break;
                     }
+                    case CPLXSXP: {
+                        variant = dx_hash(Rcpp::as<Rcpp::NumericVector>(x),
+                                          Rcpp::as<Rcpp::ComplexVector>(y));
+                        break;
+                    }
                     default: {
-                        Rcpp::stop("Invalid value_type!");
+                        Rcpp::stop("Invalid value type!");
                         break;
                     }
                 }
@@ -262,8 +272,13 @@ public:
                                           Rcpp::as<Rcpp::LogicalVector>(y));
                         break;
                     }
+                    case CPLXSXP: {
+                        variant = sx_hash(Rcpp::as<Rcpp::CharacterVector>(x),
+                                          Rcpp::as<Rcpp::ComplexVector>(y));
+                        break;
+                    }
                     default: {
-                        Rcpp::stop("Invalid value_type!");
+                        Rcpp::stop("Invalid value type!");
                         break;
                     }
                 }

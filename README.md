@@ -76,6 +76,7 @@ It is important to note that unlike the `environment`-based solution, `hashmap` 
     -   `integer`
     -   `numeric`
     -   `character`
+    -   `complex`
     -   `Date`
     -   `POSIXct`
 

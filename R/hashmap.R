@@ -47,6 +47,8 @@
 #'
 #'      \item \code{character}
 #'
+#'      \item \code{complex}
+#'
 #'      \item \code{Date}
 #'
 #'      \item \code{POSIXct}

@@ -385,16 +385,19 @@ typedef HashTemplate<std::string, std::string> ss_hash;
 typedef HashTemplate<std::string, double> sd_hash;
 typedef HashTemplate<std::string, int> si_hash;
 typedef HashTemplate<std::string, bool> sb_hash;
+typedef HashTemplate<std::string, Rcomplex> sx_hash;
 
 typedef HashTemplate<double, double> dd_hash;
 typedef HashTemplate<double, std::string> ds_hash;
 typedef HashTemplate<double, int> di_hash;
 typedef HashTemplate<double, bool> db_hash;
+typedef HashTemplate<double, Rcomplex> dx_hash;
 
 typedef HashTemplate<int, int> ii_hash;
 typedef HashTemplate<int, std::string> is_hash;
 typedef HashTemplate<int, double> id_hash;
 typedef HashTemplate<int, bool> ib_hash;
+typedef HashTemplate<int, Rcomplex> ix_hash;
 
 } // hashmap
 
