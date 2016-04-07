@@ -174,11 +174,23 @@ What `hashmap` may lack in terms of flexibility it makes up for in two important
     #[1] 100 200 300
     ```
 
+-   To remove elements from the hash table, pass a vector of keys to `$erase`, which will delete entries for matched elements, and do nothing otherwise:
+
+    ``` r
+    H$has_keys(c("y", "Y", "z", "Z"))
+    #[1]  TRUE FALSE  TRUE FALSE
+
+    H$erase(c("y", "Y", "z", "Z"))
+
+    H$has_keys(c("y", "Y", "z", "Z"))
+    #[1] FALSE FALSE FALSE FALSE
+    ```
+
 -   Use `$size` to check the number of key-value pairs, `$empty` to check if the hash table is empty, and `$clear` to delete all existing entries:
 
     ``` r
     H$size()
-    #[1] 13
+    #[1] 11
 
     H$empty()
     #[1] FALSE
