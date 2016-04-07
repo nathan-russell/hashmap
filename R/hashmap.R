@@ -55,7 +55,7 @@
 #'
 #'  }
 #'
-#' @seealso \code{\link{Hashmap}} for a more detailed
+#' @seealso \code{\link{Hashmap-class}} for a more detailed
 #'      discussion of available methods
 #'
 #' @examples

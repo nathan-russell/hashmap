@@ -81,7 +81,7 @@ microbenchmark::microbenchmark(
 }
 }
 \seealso{
-\code{\link{Hashmap}} for a more detailed
+\code{\link{Hashmap-class}} for a more detailed
      discussion of available methods
 }
 
