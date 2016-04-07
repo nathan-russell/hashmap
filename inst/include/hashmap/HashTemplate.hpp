@@ -49,8 +49,8 @@ private:
     /*mutable*/ key_vec kvec;
     /*mutable*/ value_vec vvec;
 
-    mutable bool date_keys;
-    mutable bool date_values;
+    /*mutable*/ bool date_keys;
+    /*mutable*/ bool date_values;
 
     struct posix_t {
         bool is;
@@ -346,14 +346,6 @@ public:
             knames[i] = first->first;
             res[i] = first->second;
             ++i;
-        }
-
-        if (date_keys) {
-            knames.attr("class") = "Date";
-        } else if (posix_keys.is) {
-            knames.attr("class") =
-                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
-            knames.attr("tzone") = posix_keys.tz;
         }
 
         SEXP snames;
