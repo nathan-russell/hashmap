@@ -95,8 +95,6 @@ public:
         n = nk < nv ? nk : nv;
 
         map.reserve(n);
-        //kvec = Rcpp::no_init_vector(n);
-        //vvec = Rcpp::no_init_vector(n);
         kvec = key_vec(n);
         vvec = value_vec(n);
 
@@ -216,7 +214,6 @@ public:
 
         R_xlen_t i = 0, n = map.size();
         if (kvec.size() != n) {
-            //kvec = Rcpp::no_init_vector(n);
             kvec = key_vec(n);
         }
 
@@ -242,7 +239,6 @@ public:
 
         R_xlen_t i = 0, n = map.size();
         if (vvec.size() != n) {
-            //vvec = Rcpp::no_init_vector(n);
             vvec = value_vec(n);
         }
 
@@ -286,7 +282,6 @@ public:
             if (pos != last) {
                 res[i] = pos->second;
             } else {
-                //res[i] = value_na();
                 res[i] = Rcpp::traits::get_na<value_rtype>();
             }
         }
@@ -365,8 +360,6 @@ public:
         PROTECT(snames = Rf_coerceVector(knames, STRSXP));
         Rcpp::Vector<STRSXP> names(snames);
         UNPROTECT(1);
-
-        //if (date_keys) names.attr("class") = "Date";
 
         if (date_values) {
             res.attr("class") = "Date";
