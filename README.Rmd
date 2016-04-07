@@ -19,7 +19,6 @@ hashmap
 
 [![Travis-CI Build Status](https://travis-ci.org/nathan-russell/hashmap.svg?branch=master)](https://travis-ci.org/nathan-russell/hashmap) 
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/hashmap)](http://cran.r-project.org/package=hashmap) 
 
 
 ### Motivation 
@@ -32,10 +31,7 @@ the fact that these objects are, by default, internally hashed:
 EE <- new.env(hash = TRUE)  ## equivalent to new.env()
 
 set.seed(123)
-vapply(LETTERS, function(x) {
-      assign(x, rnorm(1), envir = EE)
-      integer(0)
-}, FUN.VALUE = integer(0), USE.NAMES = FALSE)
+invisible(sapply(LETTERS, function(x) EE[[x]] <- rnorm(1)))
 
 EE[["A"]]
 #[1] -0.5604756
@@ -143,18 +139,18 @@ truncated to the length of its counterpart, and a warning is issued:
     ##         [c] => [3]      
     ##         [b] => [2]      
     ##         [a] => [1]      
-    Warning message:
-    In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
-      length(keys) != length(values)!
+    #Warning message:
+    #In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
+    #  length(keys) != length(values)!
       
     hashmap(letters[1:3], 1:5)
     ## (character) => (integer)
     ##         [c] => [3]      
     ##         [b] => [2]      
     ##         [a] => [1]      
-    Warning message:
-    In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
-      length(keys) != length(values)!
+    #Warning message:
+    #In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
+    #  length(keys) != length(values)!
     ```
     
 + Value lookup can be performed by passing a vector of lookup keys to 
@@ -343,19 +339,20 @@ then be solved by encapsulating instances of `HashTemplate` within a
 `boost::variant` and making extensive use of `boost::static_visitor` and 
 `boost::apply_visitor`. 
 
-#### Benchmark 
+----------- 
 
------------
+#### Benchmark
 
 The following is a simple test comparing the performance of an 
-`environment` object against `hashtable` for 
+`environment` object against `hashmap` for 
 
 1. Construction of the hash table 
 2. Vectorized key lookup 
 
 An overview of results in presented here, but the 
-full code to reproduce the test is in `assets/benchmark.R`. All 
-of the tests use a one million element character vector for 
+full code to reproduce the test is in 
+[assets/benchmark.R](https://github.com/nathan-russell/hashmap/blob/master/assets/benchmark.R). 
+All of the examples use a one million element character vector for 
 keys, and a one million element numeric vector for values.
 
 Hash table construction was rather slow for the environment, 
@@ -394,7 +391,8 @@ microbenchmark::microbenchmark(
 ```
 
 And finally, a comparison of key-lookups for vectors of various sizes, 
-plotted below on the linear and logarithmic scale:
+plotted below on the linear and logarithmic scales, where data points 
+represent median evaluation time of 200 runs for the given expression: 
 
 
 ![](assets/linear-plot.png)
@@ -405,7 +403,7 @@ plotted below on the linear and logarithmic scale:
 
 -----------
 
-The benchmark test was conducted on a laptop running Ubuntu 
+The benchmark was conducted on a laptop running Ubuntu 
 14.04, with the following specs, 
 
 ```shell

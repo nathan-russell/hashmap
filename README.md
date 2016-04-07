@@ -2,7 +2,7 @@
 hashmap
 =======
 
-[![Travis-CI Build Status](https://travis-ci.org/nathan-russell/hashmap.svg?branch=master)](https://travis-ci.org/nathan-russell/hashmap) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/hashmap)](http://cran.r-project.org/package=hashmap)
+[![Travis-CI Build Status](https://travis-ci.org/nathan-russell/hashmap.svg?branch=master)](https://travis-ci.org/nathan-russell/hashmap) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 ### Motivation
 
@@ -12,10 +12,7 @@ Unlike many programming languages, R does not implement a native hash table clas
 EE <- new.env(hash = TRUE)  ## equivalent to new.env()
 
 set.seed(123)
-vapply(LETTERS, function(x) {
-      assign(x, rnorm(1), envir = EE)
-      integer(0)
-}, FUN.VALUE = integer(0), USE.NAMES = FALSE)
+invisible(sapply(LETTERS, function(x) EE[[x]] <- rnorm(1)))
 
 EE[["A"]]
 #[1] -0.5604756
@@ -112,18 +109,18 @@ What `hashmap` may lack in terms of flexibility it makes up for in two important
     ##         [c] => [3]      
     ##         [b] => [2]      
     ##         [a] => [1]      
-    Warning message:
-    In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
-      length(keys) != length(values)!
+    #Warning message:
+    #In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
+    #  length(keys) != length(values)!
 
     hashmap(letters[1:3], 1:5)
     ## (character) => (integer)
     ##         [c] => [3]      
     ##         [b] => [2]      
     ##         [a] => [1]      
-    Warning message:
-    In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
-      length(keys) != length(values)!
+    #Warning message:
+    #In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
+    #  length(keys) != length(values)!
     ```
 
 -   Value lookup can be performed by passing a vector of lookup keys to either of `[[` or `$find`:
@@ -269,16 +266,16 @@ Generally speaking, exposing C++ classes to R means dealing with one or both of 
 
 To overcome both of the issues outlined above, `hashmap` relies on features provided by the [Boost C++ Libraries](http://www.boost.org/), which are conveniently made available through the [R package BH](https://github.com/eddelbuettel/bh). To address the second obstacle, `hashmap` employs a templated wrapper class [HashTemplate](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashTemplate.hpp), leveraging the functionality of the C++98-compliant `boost::unordered_map` and `boost::hash` (in lieu of C++11's `std::unordered_map` and `std::hash`). Subsequently, the first problem can then be solved by encapsulating instances of `HashTemplate` within a `boost::variant` and making extensive use of `boost::static_visitor` and `boost::apply_visitor`.
 
-#### Benchmark
-
 ------------------------------------------------------------------------
 
-The following is a simple test comparing the performance of an `environment` object against `hashtable` for
+#### Benchmark
+
+The following is a simple test comparing the performance of an `environment` object against `hashmap` for
 
 1.  Construction of the hash table
 2.  Vectorized key lookup
 
-An overview of results in presented here, but the full code to reproduce the test is in `assets/benchmark.R`. All of the tests use a one million element character vector for keys, and a one million element numeric vector for values.
+An overview of results in presented here, but the full code to reproduce the test is in [assets/benchmark.R](https://github.com/nathan-russell/hashmap/blob/master/assets/benchmark.R). All of the examples use a one million element character vector for keys, and a one million element numeric vector for values.
 
 Hash table construction was rather slow for the environment, despite my ~~best~~ moderate efforts to devise a fast solution, so expressions were only evaluated 25 times:
 
@@ -314,7 +311,7 @@ microbenchmark::microbenchmark(
 #   Env 12291.671 12651.12 13020.3816 12740.1735 12919.7355 67220.784   500   b
 ```
 
-And finally, a comparison of key-lookups for vectors of various sizes, plotted below on the linear and logarithmic scale:
+And finally, a comparison of key-lookups for vectors of various sizes, plotted below on the linear and logarithmic scales, where data points represent median evaluation time of 200 runs for the given expression:
 
 ![](assets/linear-plot.png)
 
@@ -322,7 +319,7 @@ And finally, a comparison of key-lookups for vectors of various sizes, plotted b
 
 ------------------------------------------------------------------------
 
-The benchmark test was conducted on a laptop running Ubuntu 14.04, with the following specs,
+The benchmark was conducted on a laptop running Ubuntu 14.04, with the following specs,
 
 ``` shell
 nathan@nathan-laptop:~$ lscpu && printf "\n\n" && free -h
