@@ -268,3 +268,119 @@ Generally speaking, exposing C++ classes to R means dealing with one or both of 
 2.  Although nearly all major C++ compiler vendors have been providing feature-complete implementations of the C++11 standard for several years, R itself is implemented under the assumption of a C++98-compliant toolchain, and as a result packages which depend on more modern C++ features are not exactly encouraged. Furthermore, compiling source code on Windows machines requires the [Rtools extension](https://cran.r-project.org/bin/windows/Rtools/), which is not included with standard distributions of R. As the most current version of Rtools uses gcc 4.6.x (via MinGW), compiling C++11-based source code is not an option for many Windows users. The next [iteration of Rtools](https://github.com/rwinlib/r-base#readme) should be available sometime in the near future, so hopefully this will be less of an issue looking ahead.
 
 To overcome both of the issues outlined above, `hashmap` relies on features provided by the [Boost C++ Libraries](http://www.boost.org/), which are conveniently made available through the [R package BH](https://github.com/eddelbuettel/bh). To address the second obstacle, `hashmap` employs a templated wrapper class [HashTemplate](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashTemplate.hpp), leveraging the functionality of the C++98-compliant `boost::unordered_map` and `boost::hash` (in lieu of C++11's `std::unordered_map` and `std::hash`). Subsequently, the first problem can then be solved by encapsulating instances of `HashTemplate` within a `boost::variant` and making extensive use of `boost::static_visitor` and `boost::apply_visitor`.
+
+#### Benchmark
+
+------------------------------------------------------------------------
+
+The following is a simple test comparing the performance of an `environment` object against `hashtable` for
+
+1.  Construction of the hash table
+2.  Vectorized key lookup
+
+An overview of results in presented here, but the full code to reproduce the test is in `assets/benchmark.R`. All of the tests use a one million element character vector for keys, and a one million element numeric vector for values.
+
+Hash table construction was rather slow for the environment, despite my ~~best~~ moderate efforts to devise a fast solution, so expressions were only evaluated 25 times:
+
+``` r
+microbenchmark::microbenchmark(
+    "Hash" = hashmap(Keys, Values),
+    "Env" = env_hash(Keys, Values),
+    times = 25L
+)
+# Unit: milliseconds
+#  expr        min        lq      mean    median       uq       max neval cld
+#  Hash   946.3524  1287.771  1784.404  1639.788  2243.93  3315.194    25   a 
+#   Env 11724.2705 13218.521 14071.874 13685.929 15178.27 16516.216    25   b
+```
+
+Next, a lookup of all 1000 keys:
+
+``` r
+E <- env_hash(Keys, Values)
+H <- hashmap(Keys, Values)
+
+all.equal(env_find(Lookup, E), H[[Lookup]])
+#[1] TRUE
+
+microbenchmark::microbenchmark(
+    "Hash" = H[[Lookup]],
+    "Env" = env_find(Lookup, E), 
+    times = 500L
+)
+# Unit: microseconds
+#  expr       min       lq       mean     median         uq       max neval cld
+#  Hash   314.182   738.98   804.5154   799.7065   858.3895  3013.285   500   a 
+#   Env 12291.671 12651.12 13020.3816 12740.1735 12919.7355 67220.784   500   b
+```
+
+And finally, a comparison of key-lookups for vectors of various sizes, plotted below on the linear and logarithmic scale:
+
+![](assets/linear-plot.png)
+
+![](assets/log-plot.png)
+
+------------------------------------------------------------------------
+
+The benchmark test was conducted on a laptop running Ubuntu 14.04, with the following specs,
+
+``` shell
+nathan@nathan-laptop:~$ lscpu && printf "\n\n" && free -h
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                4
+On-line CPU(s) list:   0-3
+Thread(s) per core:    2
+Core(s) per socket:    2
+Socket(s):             1
+NUMA node(s):          1
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 69
+Stepping:              1
+CPU MHz:               759.000
+BogoMIPS:              4589.34
+Virtualization:        VT-x
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              256K
+L3 cache:              3072K
+NUMA node0 CPU(s):     0-3
+
+
+             total       used       free     shared    buffers     cached
+Mem:          7.7G       5.6G       2.1G       333M       499M       2.5G
+-/+ buffers/cache:       2.6G       5.1G
+Swap:           0B         0B         0B
+```
+
+in the following R session:
+
+``` r
+R version 3.2.4 Revised (2016-03-16 r70336)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.4 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8       
+ [4] LC_COLLATE=en_US.UTF-8     LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C              
+[10] LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] data.table_1.9.6   hashmap_0.0.0.9000 ggvis_0.4.2       
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.4.1          rstudioapi_0.3.1       knitr_1.11             magrittr_1.5          
+ [5] munsell_0.4.2          colorspace_1.2-6       xtable_1.8-2           R6_2.1.1              
+ [9] plyr_1.8.3             dplyr_0.4.3            tools_3.2.4            parallel_3.2.4        
+[13] grid_3.2.4             gtable_0.1.2           DBI_0.3.1              htmltools_0.3.5       
+[17] yaml_2.1.13            lazyeval_0.1.10        assertthat_0.1         digest_0.6.8          
+[21] shiny_0.13.2           ggplot2_2.0.0          microbenchmark_1.4-2.1 codetools_0.2-14      
+[25] mime_0.4               rmarkdown_0.8.1        scales_0.3.0           jsonlite_0.9.17       
+[29] httpuv_1.3.3           chron_2.3-47 
+```
