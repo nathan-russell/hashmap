@@ -38,6 +38,9 @@
 #'  \item \code{values_cached()}: returns \code{TRUE} if the hash table's
 #'      values are currently cached, and \code{FALSE} otherwise.
 #'
+#'  \item \code{erase(remove_keys)}: deletes entries for elements
+#'      that exist in the hash table, and ignores elements that do not.
+#'
 #'  \item \code{clear()}: deletes all keys and values from \code{H}.
 #'
 #'  \item \code{data()}: returns a named vector of \code{values} using
