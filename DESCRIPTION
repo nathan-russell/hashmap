@@ -7,7 +7,7 @@ Authors@R: person("Nathan", "Russell", email = "russell.nr2012@gmail.com",
     role = c("aut", "cre"))
 URL: https://github.com/nathan-russell/hashmap
 BugReports: https://github.com/nathan-russell/hashmap/issues
-Description: The hashmap package provides a hash table class for fast
+Description: Provides a hash table class for fast
     key-value storage of atomic vector types.
     Internally, hashmap makes extensive use of Rcpp, boost::variant,
     and boost::unordered_map to achieve high performance, type-safety,

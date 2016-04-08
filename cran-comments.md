@@ -1,3 +1,9 @@
+## Resubmission 
+This is a resubmission, where I have: 
+* Used the correct MIT LICENSE template 
+* Fixed the DESCRIPTION to begin with 'Provides...'
+
+
 ## Test environments
 * local CentOS 7 (64-bit), R 3.2.3
 * local Ubuntu 14.04 (64-bit), R 3.2.4
