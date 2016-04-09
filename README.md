@@ -2,7 +2,7 @@
 hashmap
 =======
 
-[![Travis-CI Build Status](https://travis-ci.org/nathan-russell/hashmap.svg?branch=master)](https://travis-ci.org/nathan-russell/hashmap) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Travis-CI Build Status](https://travis-ci.org/nathan-russell/hashmap.svg?branch=master)](https://travis-ci.org/nathan-russell/hashmap) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/hashmap)](http://cran.r-project.org/package=hashmap)
 
 ### Motivation
 
@@ -392,4 +392,23 @@ loaded via a namespace (and not attached):
 [21] shiny_0.13.2           ggplot2_2.0.0          microbenchmark_1.4-2.1 codetools_0.2-14      
 [25] mime_0.4               rmarkdown_0.8.1        scales_0.3.0           jsonlite_0.9.17       
 [29] httpuv_1.3.3           chron_2.3-47 
+```
+
+------------------------------------------------------------------------
+
+### Installation
+
+The lastest release version of `hashmap` can be installed normally from CRAN:
+
+``` r
+install.packages("hashmap")
+```
+
+Bleeding-edge versions can be installed from GitHub with `devtools`:
+
+``` r
+if (!"devtools" %in% installed.packages()[,1]) {
+    install.packages("devtools")
+}
+devtools::install_github("nathan-russell/hashmap")
 ```
