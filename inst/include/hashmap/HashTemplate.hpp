@@ -368,11 +368,6 @@ public:
             ++i;
         }
 
-        SEXP snames;
-        PROTECT(snames = Rf_coerceVector(knames, STRSXP));
-        Rcpp::Vector<STRSXP> names(snames);
-        UNPROTECT(1);
-
         if (date_values) {
             res.attr("class") = "Date";
         } else if (posix_values.is) {
@@ -380,6 +375,22 @@ public:
                 Rcpp::CharacterVector::create("POSIXct", "POSIXt");
             res.attr("tzone") = posix_values.tz;
         }
+
+        if (date_keys) {
+            knames.attr("class") = "Date";
+        } else if (posix_keys.is) {
+            knames.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            knames.attr("tzone") = posix_keys.tz;
+
+            res.names() = knames;
+            return res;
+        }
+
+        SEXP snames;
+        PROTECT(snames = Rf_coerceVector(knames, STRSXP));
+        Rcpp::Vector<STRSXP> names(snames);
+        UNPROTECT(1);
 
         res.names() = names;
         return res;
