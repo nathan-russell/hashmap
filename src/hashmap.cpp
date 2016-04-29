@@ -39,6 +39,7 @@ RCPP_MODULE(Hashmap) {
     .method("cache_values", &HashMap::cache_values)
 
     .method("renew", &HashMap::renew)
+    .method("data.frame", &HashMap::data_frame)
 
     ;
 }

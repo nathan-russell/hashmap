@@ -395,6 +395,30 @@ public:
         res.names() = names;
         return res;
     }
+
+    Rcpp::DataFrame data_frame() const {
+        if (keys_cached_ && values_cached_) {
+            return Rcpp::DataFrame::create(
+                Rcpp::Named("Keys") = kvec,
+                Rcpp::Named("Values") = vvec);
+        }
+
+        if (keys_cached_) {
+            return Rcpp::DataFrame::create(
+                Rcpp::Named("Keys") = kvec,
+                Rcpp::Named("Values") = values());
+        }
+
+        if (values_cached_) {
+            return Rcpp::DataFrame::create(
+                Rcpp::Named("Keys") = keys(),
+                Rcpp::Named("Values") = vvec);
+        }
+
+        return Rcpp::DataFrame::create(
+            Rcpp::Named("Keys") = keys(),
+            Rcpp::Named("Values") = values());
+    }
 };
 
 typedef HashTemplate<std::string, std::string> ss_hash;

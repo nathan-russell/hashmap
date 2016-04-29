@@ -197,6 +197,13 @@ private:
         }
     };
 
+    struct data_frame_visitor : public boost::static_visitor<SEXP> {
+        template <typename T>
+        SEXP operator()(const T& t) const {
+            return Rcpp::wrap(t.data_frame());
+        }
+    };
+
 public:
     HashMap(SEXP x, SEXP y) {
         switch (TYPEOF(x)) {
@@ -400,6 +407,11 @@ public:
 
     SEXP data() const {
         data_visitor v;
+        return boost::apply_visitor(v, variant);
+    }
+
+    SEXP data_frame() const {
+        data_frame_visitor v;
         return boost::apply_visitor(v, variant);
     }
 };
