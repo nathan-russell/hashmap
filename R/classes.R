@@ -27,8 +27,10 @@ setMethod("show", "Rcpp_Hashmap",
         }
         sz <- object$size()
 
-        .keys <- object$keys()[seq_len(min(sz, n_print))]
-        .values <- object$values()[seq_len(min(sz, n_print))]
+        # .keys <- object$keys()[seq_len(min(sz, n_print))]
+        # .values <- object$values()[seq_len(min(sz, n_print))]
+        .keys <- object$keys_n(min(sz, n_print))
+        .values <- object$values_n(min(sz, n_print))
 
 
         .lhs_header <- sprintf("(%s)", class(.keys)[1])

@@ -121,10 +121,34 @@ private:
         }
     };
 
+    struct keys_n_visitor : public boost::static_visitor<SEXP> {
+        int n;
+        keys_n_visitor(int n_)
+            : n(n_)
+        {}
+
+        template <typename T>
+        SEXP operator()(const T& t) const {
+            return Rcpp::wrap(t.keys_n(n));
+        }
+    };
+
     struct values_visitor : public boost::static_visitor<SEXP> {
         template <typename T>
         SEXP operator()(const T& t) const {
             return Rcpp::wrap(t.values());
+        }
+    };
+
+    struct values_n_visitor : public boost::static_visitor<SEXP> {
+        int n;
+        values_n_visitor(int n_)
+            : n(n_)
+        {}
+
+        template <typename T>
+        SEXP operator()(const T& t) const {
+            return Rcpp::wrap(t.values_n(n));
         }
     };
 
@@ -194,6 +218,18 @@ private:
         template <typename T>
         SEXP operator()(const T& t) const {
             return Rcpp::wrap(t.data());
+        }
+    };
+
+    struct data_n_visitor : public boost::static_visitor<SEXP> {
+        int n;
+        data_n_visitor(int n_)
+            : n(n_)
+        {}
+
+        template <typename T>
+        SEXP operator()(const T& t) const {
+            return Rcpp::wrap(t.data_n(n));
         }
     };
 
@@ -369,9 +405,19 @@ public:
         return boost::apply_visitor(v, variant);
     }
 
+    SEXP keys_n(int n) const {
+        keys_n_visitor v(n);
+        return boost::apply_visitor(v, variant);
+    }
+
     SEXP values(/*bool cache = false*/) const {
         //values_visitor v(cache);
         values_visitor v;
+        return boost::apply_visitor(v, variant);
+    }
+
+    SEXP values_n(int n) const {
+        values_n_visitor v(n);
         return boost::apply_visitor(v, variant);
     }
 
@@ -407,6 +453,11 @@ public:
 
     SEXP data() const {
         data_visitor v;
+        return boost::apply_visitor(v, variant);
+    }
+
+    SEXP data_n(int n) const {
+        data_n_visitor v(n);
         return boost::apply_visitor(v, variant);
     }
 

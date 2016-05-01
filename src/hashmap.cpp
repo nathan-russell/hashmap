@@ -31,7 +31,9 @@ RCPP_MODULE(Hashmap) {
     .method("keys", &HashMap::keys)
     .method("values", &HashMap::values)
     .method("data", &HashMap::data)
-
+    .method("keys_n", &HashMap::keys_n)
+    .method("values_n", &HashMap::values_n)
+    .method("data_n", &HashMap::data_n)
 
     .method("keys_cached", &HashMap::keys_cached)
     .method("values_cached", &HashMap::values_cached)

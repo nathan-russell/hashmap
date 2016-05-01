@@ -209,6 +209,34 @@ public:
         return res;
     }
 
+    key_vec keys_n(int nx) const {
+        if (nx < 0) nx = 0;
+        if (nx > map.size()) nx = map.size();
+
+        if (keys_cached_) {
+            Rcpp::LogicalVector vidx(nx, true);
+            return kvec[vidx];
+        }
+
+        const_iterator first = map.begin(), last = map.end();
+        key_vec res(nx);
+
+        for (R_xlen_t i = 0; first != last && i < nx; ++first) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
+            res[i++] = first->first;
+        }
+
+        if (date_keys) {
+            res.attr("class") = "Date";
+        } else if (posix_keys.is) {
+            res.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            res.attr("tzone") = posix_keys.tz;
+        }
+
+        return res;
+    }
+
     value_vec values() const {
         if (values_cached_) return vvec;
 
@@ -216,6 +244,34 @@ public:
         value_vec res(map.size());
 
         for (R_xlen_t i = 0; first != last; ++first) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
+            res[i++] = first->second;
+        }
+
+        if (date_values) {
+            res.attr("class") = "Date";
+        } else if (posix_values.is) {
+            res.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            res.attr("tzone") = posix_values.tz;
+        }
+
+        return res;
+    }
+
+    value_vec values_n(int nx) const {
+        if (nx < 0) nx = 0;
+        if (nx > map.size()) nx = map.size();
+
+        if (values_cached_) {
+            Rcpp::LogicalVector vidx(nx, true);
+            return vvec[vidx];
+        }
+
+        const_iterator first = map.begin(), last = map.end();
+        value_vec res(nx);
+
+        for (R_xlen_t i = 0; first != last && i < nx; ++first) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             res[i++] = first->second;
         }
@@ -364,6 +420,59 @@ public:
         const_iterator first = map.begin(), last = map.end();
 
         for ( ; first != last; ++first) {
+            HASHMAP_CHECK_INTERRUPT(i, 50000);
+            knames[i] = first->first;
+            res[i] = first->second;
+            ++i;
+        }
+
+        if (date_values) {
+            res.attr("class") = "Date";
+        } else if (posix_values.is) {
+            res.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            res.attr("tzone") = posix_values.tz;
+        }
+
+        if (date_keys) {
+            knames.attr("class") = "Date";
+        } else if (posix_keys.is) {
+            knames.attr("class") =
+                Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            knames.attr("tzone") = posix_keys.tz;
+
+            res.names() = knames;
+            return res;
+        }
+
+        SEXP snames;
+        PROTECT(snames = Rf_coerceVector(knames, STRSXP));
+        Rcpp::Vector<STRSXP> names(snames);
+        UNPROTECT(1);
+
+        res.names() = names;
+        return res;
+    }
+
+    value_vec data_n(int nx) const {
+        if (nx < 0) nx = 0;
+        if (nx > map.size()) nx = map.size();
+
+        if (values_cached_ && keys_cached_) {
+            Rcpp::LogicalVector vidx(nx, true);
+            value_vec res = vvec[vidx];
+            res.names() = kvec[vidx];
+            return res;
+        }
+
+        R_xlen_t i = 0, n = 0;
+
+        value_vec res(nx);
+        key_vec knames(nx);
+
+        const_iterator first = map.begin(), last = map.end();
+
+        for ( ; first != last && n != nx; ++first, ++n) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             knames[i] = first->first;
             res[i] = first->second;
