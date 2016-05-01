@@ -302,7 +302,7 @@ static const days_in_month days_in_months[] =
 #define DAYS_IN_YEARS_MAX_YEAR (days_in_years[DAYS_IN_YEARS_COUNT - 1].year)
 #define DAYS_IN_YEARS_MAX_ACCUM (days_in_years[DAYS_IN_YEARS_COUNT - 1].accum)
 
-static unsigned int get_year(unsigned int x) {
+static inline unsigned int get_year(unsigned int x) {
     unsigned int i = 0;
     unsigned int imax = DAYS_IN_YEARS_COUNT;
 
@@ -329,11 +329,12 @@ inline std::string format_date(unsigned int x) {
     if (Rcpp::traits::is_na<INTSXP>(x)) return "NA";
 
     char buff[16];
-    unsigned int y = 1970, m = 1, d = 1;
+    unsigned int miny = DAYS_IN_YEARS_MIN_YEAR;
+    unsigned int y = miny, m = 1, d = 1;
 
     if (x <= DAYS_IN_YEARS_MAX_ACCUM) {
         y = get_year(x);
-        if (y > 1970) x -= days_in_years[y - 1970 - 1].accum;
+        if (y > miny) x -= days_in_years[y - miny - 1].accum;
 
         unsigned int i = 0;
         if (!isleap(y)) {

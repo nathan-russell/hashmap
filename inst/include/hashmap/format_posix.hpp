@@ -245,7 +245,7 @@ static const tz_abbr_offset tz_abbr_offsets[] =
 
 #define TZ_ABBR_COUNT (sizeof(tz_abbr_offsets) / sizeof(tz_abbr_offset))
 
-static signed int get_abbr_offset(const char* str) {
+static inline signed int get_abbr_offset(const char* str) {
     unsigned int sz = std::strlen(str), i = 0;
     if (sz > TZ_ABBR_MAX_CHAR) return 0;
 
