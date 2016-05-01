@@ -22,8 +22,7 @@
 #define hashmap__HashTemplate__hpp
 
 #include "traits.hpp"
-#include "format_posix.hpp"
-#include "format_date.hpp"
+#include "as_character.hpp"
 #include <boost/unordered_map.hpp>
 #include <boost/functional/hash.hpp>
 
