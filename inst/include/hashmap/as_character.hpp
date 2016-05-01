@@ -115,7 +115,13 @@ inline Rcpp::Vector<STRSXP>
 as_character(const Rcpp::Vector<RTYPE>& x) {
     return Rcpp::as< Rcpp::Vector<STRSXP> >(x);
 }
-//Rf_inherits(x, "POSIXt")
+
+template <>
+inline Rcpp::Vector<STRSXP>
+as_character<STRSXP>(const Rcpp::Vector<STRSXP>& x) {
+    return x;
+}
+
 template <>
 inline Rcpp::Vector<STRSXP>
 as_character<INTSXP>(const Rcpp::Vector<INTSXP>& x) {
