@@ -38,14 +38,18 @@ setMethod("show", "Rcpp_Hashmap",
 
         #.data <- head(object$data(), n_print)
 
-        if (is.numeric(.keys)) {
+        if (is.integer(.keys)) {
+            .keys <- sprintf("[%d]", .keys)
+        } else if (is.numeric(.keys)) {
             .keys <- sprintf("[%+f]",
                 round(.keys, getOption("digits")))
         } else {
             .keys <- sprintf("[%s]", .keys)
         }
 
-        if (is.numeric(.values)) {
+        if (is.integer(.values)) {
+            .values <- sprintf("[%d]", .values)
+        } else if (is.numeric(.values)) {
             .values <- sprintf("[%+f]",
                 round(.values, getOption("digits"))
             )

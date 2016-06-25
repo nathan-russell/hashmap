@@ -398,7 +398,7 @@ loaded via a namespace (and not attached):
 
 ### Installation
 
-The lastest release version of `hashmap` can be installed normally from CRAN:
+The latest release version of `hashmap` can be installed normally from CRAN:
 
 ``` r
 install.packages("hashmap")
