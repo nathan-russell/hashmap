@@ -76,3 +76,34 @@ setMethod("show", "Rcpp_Hashmap",
         invisible(object)
     }
 )
+
+#' @rdname plot
+#' @title Plot method for Hashmap class
+#' @name plot
+#' @description Plot method for Hashmap class
+#' @param x an object created by a call to \code{hashmap}
+#' @param \dots arguments passed to \code{plot}
+#' @details A convenience function which simply calls \code{plot} using
+#'  \code{x$keys()} and \code{x$values()} as plotting coordinates.
+#'
+#' @examples
+#'
+#' x <- hashmap(1:20, rnorm(20))
+#' plot(x)
+#' plot(x, type = 'p', pch = 20, col = 'red')
+#'
+#' y <- hashmap(Sys.Date() + 1:20, rnorm(20))
+#' plot(y, type = 'h', col = 'blue', lwd = 3)
+
+#' @importFrom graphics plot
+#' @method plot Rcpp_Hashmap
+#' @export
+plot.Rcpp_Hashmap <- function(x, ...) {
+    if (x$empty()) {
+        stop("Cannot plot empty hashmap.")
+    }
+
+    keys <- x$keys()
+    values <- x$values()
+    invisible(plot(keys, values, ...))
+}

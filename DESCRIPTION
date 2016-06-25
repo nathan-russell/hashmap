@@ -31,3 +31,4 @@ Collate:
     'classes.R'
     'Hashmap-class.R'
     'zzz.R'
+RoxygenNote: 5.0.1
