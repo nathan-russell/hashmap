@@ -14,6 +14,7 @@ RCPP_MODULE(Hashmap) {
     .method("clear", &HashMap::clear)
     .method("bucket_count", &HashMap::bucket_count)
     .method("rehash", &HashMap::rehash)
+    .method("reserve", &HashMap::reserve)
 
     .method("hash_value", &HashMap::hash_value)
 

@@ -27,16 +27,12 @@ setMethod("show", "Rcpp_Hashmap",
         }
         sz <- object$size()
 
-        # .keys <- object$keys()[seq_len(min(sz, n_print))]
-        # .values <- object$values()[seq_len(min(sz, n_print))]
         .keys <- object$keys_n(min(sz, n_print))
         .values <- object$values_n(min(sz, n_print))
 
 
         .lhs_header <- sprintf("(%s)", class(.keys)[1])
         .rhs_header <- sprintf("(%s)", class(.values)[1])
-
-        #.data <- head(object$data(), n_print)
 
         if (is.integer(.keys)) {
             .keys <- sprintf("[%d]", .keys)

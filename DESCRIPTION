@@ -30,5 +30,7 @@ Collate:
     'hashmap.R'
     'classes.R'
     'Hashmap-class.R'
+    'load_hashmap.R'
+    'save_hashmap.R'
     'zzz.R'
 RoxygenNote: 5.0.1

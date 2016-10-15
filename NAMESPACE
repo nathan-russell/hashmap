@@ -2,6 +2,8 @@
 
 S3method(plot,Rcpp_Hashmap)
 export(hashmap)
+export(load_hashmap)
+export(save_hashmap)
 exportClasses(Rcpp_Hashmap)
 exportPattern("^[[:alpha:]]+")
 importClassesFrom(Rcpp,"C++Object")

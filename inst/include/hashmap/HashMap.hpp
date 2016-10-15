@@ -90,6 +90,18 @@ private:
         }
     };
 
+    struct reserve_visitor : public boost::static_visitor<> {
+        std::size_t n;
+        reserve_visitor(std::size_t n_)
+            : n(n_)
+        {}
+
+        template <typename T>
+        void operator()(T& t) {
+            t.reserve(n);
+        }
+    };
+
     struct hash_value_visitor : public boost::static_visitor<SEXP> {
         SEXP keys;
         hash_value_visitor(SEXP keys_)
@@ -389,6 +401,11 @@ public:
         boost::apply_visitor(v, variant);
     }
 
+    void reserve(int n) {
+        reserve_visitor v(n);
+        boost::apply_visitor(v, variant);
+    }
+
     SEXP hash_value(SEXP x) const {
         hash_value_visitor v(x);
         return boost::apply_visitor(v, variant);
@@ -400,7 +417,6 @@ public:
     }
 
     SEXP keys(/*bool cache = false*/) const {
-        //keys_visitor v(cache);
         keys_visitor v;
         return boost::apply_visitor(v, variant);
     }
@@ -411,7 +427,6 @@ public:
     }
 
     SEXP values(/*bool cache = false*/) const {
-        //values_visitor v(cache);
         values_visitor v;
         return boost::apply_visitor(v, variant);
     }

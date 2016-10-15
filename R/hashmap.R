@@ -87,4 +87,3 @@ Rcpp::loadModule("Hashmap", TRUE)
 hashmap <- function(keys, values, ...) {
     new("Rcpp_Hashmap", keys, values, ...)
 }
-

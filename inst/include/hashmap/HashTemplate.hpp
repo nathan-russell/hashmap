@@ -115,7 +115,7 @@ public:
         }
         n = nk < nv ? nk : nv;
 
-        map.reserve(n);
+        map.reserve((size_type)(n * 1.05));
         kvec = key_vec(n);
         vvec = value_vec(n);
 
@@ -127,18 +127,6 @@ public:
         date_keys = Rf_inherits(keys_, "Date");
         date_values = Rf_inherits(values_, "Date");
     }
-
-//     HashTemplate& operator=(const HashTemplate& other) {
-//         if (this == &other) return *this;
-//
-//         map = other.map;
-//         values_cached_ = other.values_cached_;
-//         keys_cached_ = other.keys_cached_;
-//         kvec = Rcpp::clone(other.kvec);
-//         vvec = Rcpp::clone(other.vvec);
-//
-//         return *this;
-//     }
 
     size_type size() const { return map.size(); }
     bool empty() const { return map.empty(); }
@@ -153,6 +141,7 @@ public:
 
     size_type bucket_count() const { return map.bucket_count(); }
     void rehash(size_type n) { map.rehash(n); }
+    void reserve(size_type n) { map.reserve(n); }
 
     Rcpp::Vector<INTSXP> hash_value(const key_vec& keys_) const {
         R_xlen_t i = 0, nk = keys_.size();
@@ -210,7 +199,7 @@ public:
 
     key_vec keys_n(int nx) const {
         if (nx < 0) nx = 0;
-        if (nx > map.size()) nx = map.size();
+        if ((size_type)nx > map.size()) nx = map.size();
 
         if (keys_cached_) {
             Rcpp::LogicalVector vidx(nx, true);
@@ -510,24 +499,28 @@ public:
         if (keys_cached_ && values_cached_) {
             return Rcpp::DataFrame::create(
                 Rcpp::Named("Keys") = kvec,
-                Rcpp::Named("Values") = vvec);
+                Rcpp::Named("Values") = vvec
+            );
         }
 
         if (keys_cached_) {
             return Rcpp::DataFrame::create(
                 Rcpp::Named("Keys") = kvec,
-                Rcpp::Named("Values") = values());
+                Rcpp::Named("Values") = values()
+            );
         }
 
         if (values_cached_) {
             return Rcpp::DataFrame::create(
                 Rcpp::Named("Keys") = keys(),
-                Rcpp::Named("Values") = vvec);
+                Rcpp::Named("Values") = vvec
+            );
         }
 
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = keys(),
-            Rcpp::Named("Values") = values());
+            Rcpp::Named("Values") = values()
+        );
     }
 };
 
