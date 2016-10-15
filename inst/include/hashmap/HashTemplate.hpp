@@ -249,7 +249,7 @@ public:
 
     value_vec values_n(int nx) const {
         if (nx < 0) nx = 0;
-        if (nx > map.size()) nx = map.size();
+        if ((size_type)nx > map.size()) nx = map.size();
 
         if (values_cached_) {
             Rcpp::LogicalVector vidx(nx, true);
