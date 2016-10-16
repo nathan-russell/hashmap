@@ -481,7 +481,7 @@ public:
         if ((size_type)nx > map.size()) nx = map.size();
 
         if (values_cached_ && keys_cached_) {
-            Rcpp::LogicalVector vidx(nx, true);
+            Rcpp::Range vidx = Rcpp::seq(0, nx - 1);
             value_vec res = vvec[vidx];
             res.names() = kvec[vidx];
             return res;
