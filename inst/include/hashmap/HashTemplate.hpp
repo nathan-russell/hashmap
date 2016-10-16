@@ -64,14 +64,14 @@ private:
     key_t key_na() const { return traits::get_na<key_t>(); }
     value_t value_na() const { return traits::get_na<value_t>(); }
 
-    /*mutable*/ bool keys_cached_;
-    /*mutable*/ bool values_cached_;
+    mutable bool keys_cached_;
+    mutable bool values_cached_;
 
-    /*mutable*/ key_vec kvec;
-    /*mutable*/ value_vec vvec;
+    mutable key_vec kvec;
+    mutable value_vec vvec;
 
-    /*mutable*/ bool date_keys;
-    /*mutable*/ bool date_values;
+    mutable bool date_keys;
+    mutable bool date_values;
 
     struct posix_t {
         bool is;
@@ -90,10 +90,30 @@ private:
         posix_t()
             : is(false), tz(R_NilValue)
         {}
+
+        posix_t(const posix_t& other)
+            : is(other.is),
+              tz(Rcpp::clone(other.tz))
+        {}
     };
 
     posix_t posix_keys;
     posix_t posix_values;
+
+    HashTemplate(const map_t& xmap, bool xkeys_cached_, bool xvalues_cached_,
+                 const key_vec& xkvec, const value_vec& xvvec,
+                 bool xdate_keys, bool xdate_values,
+                 const posix_t& xposix_keys, const posix_t& xposix_values)
+        : map(xmap),
+          keys_cached_(xkeys_cached_),
+          values_cached_(xvalues_cached_),
+          kvec(Rcpp::clone(xkvec)),
+          vvec(Rcpp::clone(xvvec)),
+          date_keys(xdate_keys),
+          date_values(xdate_values),
+          posix_keys(xposix_keys),
+          posix_values(xposix_values)
+    {}
 
 public:
     HashTemplate()
@@ -128,10 +148,20 @@ public:
         date_values = Rf_inherits(values_, "Date");
     }
 
+    HashTemplate clone() const {
+        return HashTemplate(
+            map, keys_cached_, values_cached_,
+            kvec, vvec, date_keys, date_values,
+            posix_keys, posix_values
+        );
+    }
+
     size_type size() const { return map.size(); }
     bool empty() const { return map.empty(); }
     bool keys_cached() const { return keys_cached_; }
     bool values_cached() const { return values_cached_; }
+    int key_sexptype() const { return key_rtype; }
+    int value_sexptype() const { return value_rtype; }
 
     void clear() {
         map.clear();
@@ -194,6 +224,9 @@ public:
             res.attr("tzone") = posix_keys.tz;
         }
 
+        kvec = res;
+        keys_cached_ = true;
+
         return res;
     }
 
@@ -202,8 +235,7 @@ public:
         if ((size_type)nx > map.size()) nx = map.size();
 
         if (keys_cached_) {
-            Rcpp::LogicalVector vidx(nx, true);
-            return kvec[vidx];
+            return kvec[Rcpp::seq(0, nx - 1)];
         }
 
         const_iterator first = map.begin(), last = map.end();
@@ -244,6 +276,9 @@ public:
             res.attr("tzone") = posix_values.tz;
         }
 
+        vvec = res;
+        values_cached_ = true;
+
         return res;
     }
 
@@ -252,8 +287,7 @@ public:
         if ((size_type)nx > map.size()) nx = map.size();
 
         if (values_cached_) {
-            Rcpp::LogicalVector vidx(nx, true);
-            return vvec[vidx];
+            return vvec[Rcpp::seq(0, nx - 1)];
         }
 
         const_iterator first = map.begin(), last = map.end();

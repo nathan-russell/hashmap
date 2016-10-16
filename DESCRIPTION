@@ -30,6 +30,7 @@ Collate:
     'hashmap.R'
     'classes.R'
     'Hashmap-class.R'
+    'clone.R'
     'load_hashmap.R'
     'save_hashmap.R'
     'zzz.R'

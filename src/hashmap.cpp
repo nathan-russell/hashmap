@@ -2,47 +2,50 @@
 #include "../inst/include/hashmap/HashMap.hpp"
 
 using namespace Rcpp;
-using namespace hashmap;
 
 RCPP_MODULE(Hashmap) {
-    class_<HashMap>("Hashmap")
+    class_<hashmap::HashMap>("Hashmap")
 
     .constructor<SEXP, SEXP>()
+    .constructor<Rcpp::XPtr<hashmap::HashMap> >()
 
-    .method("size", &HashMap::size)
-    .method("empty", &HashMap::empty)
-    .method("clear", &HashMap::clear)
-    .method("bucket_count", &HashMap::bucket_count)
-    .method("rehash", &HashMap::rehash)
-    .method("reserve", &HashMap::reserve)
+    .method("size", &hashmap::HashMap::size)
+    .method("empty", &hashmap::HashMap::empty)
+    .method("clear", &hashmap::HashMap::clear)
+    .method("bucket_count", &hashmap::HashMap::bucket_count)
+    .method("rehash", &hashmap::HashMap::rehash)
+    .method("reserve", &hashmap::HashMap::reserve)
 
-    .method("hash_value", &HashMap::hash_value)
+    .method("hash_value", &hashmap::HashMap::hash_value)
 
-    .method("insert", &HashMap::insert)
-    .method("[[<-", &HashMap::insert)
+    .method("insert", &hashmap::HashMap::insert)
+    .method("[[<-", &hashmap::HashMap::insert)
 
-    .method("erase", &HashMap::erase)
+    .method("erase", &hashmap::HashMap::erase)
 
-    .method("find", &HashMap::find)
-    .method("[[", &HashMap::find)
+    .method("find", &hashmap::HashMap::find)
+    .method("[[", &hashmap::HashMap::find)
 
-    .method("has_key", &HashMap::has_key)
-    .method("has_keys", &HashMap::has_keys)
+    .method("has_key", &hashmap::HashMap::has_key)
+    .method("has_keys", &hashmap::HashMap::has_keys)
 
-    .method("keys", &HashMap::keys)
-    .method("values", &HashMap::values)
-    .method("data", &HashMap::data)
-    .method("keys_n", &HashMap::keys_n)
-    .method("values_n", &HashMap::values_n)
-    .method("data_n", &HashMap::data_n)
+    .method("keys", &hashmap::HashMap::keys)
+    .method("values", &hashmap::HashMap::values)
+    .method("data", &hashmap::HashMap::data)
+    .method("keys_n", &hashmap::HashMap::keys_n)
+    .method("values_n", &hashmap::HashMap::values_n)
+    .method("data_n", &hashmap::HashMap::data_n)
 
-    .method("keys_cached", &HashMap::keys_cached)
-    .method("values_cached", &HashMap::values_cached)
-    .method("cache_keys", &HashMap::cache_keys)
-    .method("cache_values", &HashMap::cache_values)
+    .method("keys_cached", &hashmap::HashMap::keys_cached)
+    .method("values_cached", &hashmap::HashMap::values_cached)
+    .method("cache_keys", &hashmap::HashMap::cache_keys)
+    .method("cache_values", &hashmap::HashMap::cache_values)
 
-    .method("renew", &HashMap::renew)
-    .method("data.frame", &HashMap::data_frame)
+    .method("key_sexptype", &hashmap::HashMap::key_sexptype)
+    .method("value_sexptype", &hashmap::HashMap::value_sexptype)
+
+    .method("renew", &hashmap::HashMap::renew)
+    .method("data.frame", &hashmap::HashMap::data_frame)
 
     ;
 }

@@ -36,6 +36,13 @@ class HashMap {
 private:
     variant_hash variant;
 
+    struct clone_visitor : public boost::static_visitor<variant_hash> {
+        template <typename T>
+        variant_hash operator()(const T& t) const {
+            return variant_hash(t.clone());
+        }
+    };
+
     struct size_visitor : public boost::static_visitor<std::size_t> {
         template <typename T>
         std::size_t operator()(const T& t) const {
@@ -61,6 +68,20 @@ private:
         template <typename T>
         bool operator()(const T& t) const {
             return t.values_cached();
+        }
+    };
+
+    struct key_sexptype_visitor : public boost::static_visitor<int> {
+        template <typename T>
+        int operator()(const T& t) const {
+            return t.key_sexptype();
+        }
+    };
+
+    struct value_sexptype_visitor : public boost::static_visitor<int> {
+        template <typename T>
+        int operator()(const T& t) const {
+            return t.value_sexptype();
         }
     };
 
@@ -366,6 +387,18 @@ public:
         }
     }
 
+    HashMap(const HashMap& other)
+        : variant(boost::apply_visitor(clone_visitor(), other.variant))
+    {}
+
+    HashMap(const Rcpp::XPtr<HashMap>& ptr)
+        : variant(boost::apply_visitor(clone_visitor(), ptr->variant))
+    {}
+
+    HashMap clone() const {
+        return HashMap(*this);
+    }
+
     void renew(SEXP x, SEXP y) {
         HashMap tmp(x, y);
         variant = tmp.variant;
@@ -385,6 +418,14 @@ public:
 
     bool values_cached() const {
         return boost::apply_visitor(values_cached_visitor(), variant);
+    }
+
+    int key_sexptype() const {
+        return boost::apply_visitor(key_sexptype_visitor(), variant);
+    }
+
+    int value_sexptype() const {
+        return boost::apply_visitor(value_sexptype_visitor(), variant);
     }
 
     void clear() {
@@ -416,7 +457,7 @@ public:
         boost::apply_visitor(v, variant);
     }
 
-    SEXP keys(/*bool cache = false*/) const {
+    SEXP keys() const {
         keys_visitor v;
         return boost::apply_visitor(v, variant);
     }
@@ -426,7 +467,7 @@ public:
         return boost::apply_visitor(v, variant);
     }
 
-    SEXP values(/*bool cache = false*/) const {
+    SEXP values() const {
         values_visitor v;
         return boost::apply_visitor(v, variant);
     }
