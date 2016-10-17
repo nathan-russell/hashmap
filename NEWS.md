@@ -16,3 +16,5 @@
 
 * Key and value vector access is now automatically cached on the first call to 
   `$keys()` and `$values()`, respectively.
+
+* Better handling of `Date` and `POSIXt` names for `$data()` (#4).
