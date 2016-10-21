@@ -527,6 +527,72 @@ public:
             Rcpp::Named("Values") = values()
         );
     }
+
+    value_vec na_value_vector(R_xlen_t sz) const {
+        return value_vec(sz, value_na());
+    }
+
+    std::string key_class_name() const {
+        if (date_keys) return "Date";
+        if (posix_keys.is) return "POSIXct";
+        switch ((int)key_rtype) {
+            case INTSXP: return "integer";
+            case REALSXP: return "numeric";
+            case STRSXP: return "character";
+            case LGLSXP: return "logical";
+            case CPLXSXP: return "complex";
+            default: return "";
+        }
+        return "";
+    }
+
+    std::string value_class_name() const {
+        if (date_values) return "Date";
+        if (posix_values.is) return "POSIXct";
+        switch ((int)value_rtype) {
+            case INTSXP: return "integer";
+            case REALSXP: return "numeric";
+            case STRSXP: return "character";
+            case LGLSXP: return "logical";
+            case CPLXSXP: return "complex";
+            default: return "";
+        }
+        return "";
+    }
+
+    template <typename KT, typename VT>
+    Rcpp::DataFrame left_outer_join(const HashTemplate<KT, VT>& other) const {
+        if (empty()) return Rcpp::DataFrame::create();
+
+        Rcpp::DataFrame res = Rcpp::DataFrame::create(
+            Rcpp::Named("Keys") = keys(),
+            Rcpp::Named("Values.x") = values(),
+            Rcpp::Named("Values.y") = other.na_value_vector(size())
+        );
+
+        std::string lhs_kcn = key_class_name(),
+            rhs_kcn = other.key_class_name();
+
+        if (lhs_kcn != rhs_kcn) {
+            Rcpp::warning(
+                "Attempt to join different key types: %s and %s\n",
+                lhs_kcn.c_str(),
+                rhs_kcn.c_str()
+            );
+            return res;
+        }
+
+        res[2] = other.find(kvec);
+        return res;
+    }
+
+    // TODO: move to HashMap.hpp & use XPtr<HashMap>
+    //  cannot use XPtr<HashTemplate> from R
+    //
+    // template <typename KT, typename VT> Rcpp::DataFrame
+    // left_outer_join(const Rcpp::XPtr< HashTemplate<KT, VT> >& other) const {
+    //     return left_outer_join(*other);
+    // }
 };
 
 typedef HashTemplate<std::string, std::string> ss_hash;
