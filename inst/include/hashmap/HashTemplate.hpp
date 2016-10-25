@@ -529,7 +529,9 @@ public:
     }
 
     value_vec na_value_vector(R_xlen_t sz) const {
-        return value_vec(sz, value_na());
+        value_vec res(sz, value_na());
+        set_value_attr(res);
+        return res;
     }
 
     std::string key_class_name() const {
