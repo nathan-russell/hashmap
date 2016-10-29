@@ -135,6 +135,15 @@ private:
         }
     }
 
+    template <typename KT, typename VT>
+    Rcpp::DataFrame empty_join_result(const HashTemplate<KT, VT>& other) const {
+        return Rcpp::DataFrame::create(
+            Rcpp::Named("Keys") = key_vec(),
+            Rcpp::Named("Values.x") = value_vec(),
+            Rcpp::Named("Values.y") = typename HashTemplate<KT, VT>::value_vec()
+        );
+    }
+
 public:
     HashTemplate()
         : keys_cached_(false), values_cached_(false),
@@ -564,7 +573,7 @@ public:
 
     template <typename KT, typename VT>
     Rcpp::DataFrame left_outer_join(const HashTemplate<KT, VT>& other) const {
-        if (empty()) return Rcpp::DataFrame::create();
+        if (empty()) return empty_join_result(other);
 
         Rcpp::DataFrame res = Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = keys(),
@@ -586,6 +595,81 @@ public:
 
         res[2] = other.find(kvec);
         return res;
+    }
+
+    template <typename KT, typename VT>
+    Rcpp::DataFrame right_outer_join(const HashTemplate<KT, VT>& other) const {
+        return other.left_outer_join(*this);
+    }
+
+    template <typename KT, typename VT>
+    Rcpp::DataFrame inner_join(const HashTemplate<KT, VT>& other) const {
+        if (empty() || other.empty()) return empty_join_result(other);
+
+        std::string lhs_kcn = key_class_name(),
+            rhs_kcn = other.key_class_name();
+
+        if (lhs_kcn != rhs_kcn) {
+            Rcpp::warning(
+                "Attempt to join different key types: %s and %s\n",
+                lhs_kcn.c_str(),
+                rhs_kcn.c_str()
+            );
+            return empty_join_result(other);
+        }
+
+        key_vec kres = keys();
+        value_vec xres = values();
+        typename HashTemplate<KT, VT>::value_vec yres = other.find(kres);
+        const int yvr_type = HashTemplate<KT, VT>::value_rtype;
+
+        Rcpp::LogicalVector idx(size());
+        for (R_xlen_t i = 0; i < size(); i++) {
+            idx[i] = !Rcpp::traits::is_na<yvr_type>(yres[i]);
+        }
+
+        return Rcpp::DataFrame::create(
+            Rcpp::Named("Keys") = kres[idx],
+            Rcpp::Named("Values.x") = xres[idx],
+            Rcpp::Named("Values.y") = yres[idx]
+        );
+    }
+
+    template <typename KT, typename VT>
+    Rcpp::DataFrame full_outer_join(const HashTemplate<KT, VT>& other) const {
+        if (empty() && other.empty()) return empty_join_result(other);
+        if (empty()) return other.left_outer_join(*this);
+        if (other.empty()) return left_outer_join(other);
+
+        std::string lhs_kcn = key_class_name(),
+            rhs_kcn = other.key_class_name();
+
+        if (lhs_kcn != rhs_kcn) {
+            Rcpp::warning(
+                "Attempt to join different key types: %s and %s\n",
+                lhs_kcn.c_str(),
+                rhs_kcn.c_str()
+            );
+            return empty_join_result(other);
+        }
+
+        R_xlen_t i = 0, j = 0, usz = size() + other.size();
+        key_vec ukeys(usz), xkeys = keys(), ykeys = other.keys();
+
+        for ( ; i < size(); i++) {
+            ukeys[i] = xkeys[i];
+        }
+        for ( ; i < usz; i++, j++) {
+            ukeys[i] = ykeys[j];
+        }
+
+        key_vec kres = Rcpp::unique(ukeys);
+
+        return Rcpp::DataFrame::create(
+            Rcpp::Named("Keys") = kres,
+            Rcpp::Named("Values.x") = find(kres),
+            Rcpp::Named("Values.y") = other.find(kres)
+        );
     }
 
     // TODO: move to HashMap.hpp & use XPtr<HashMap>
