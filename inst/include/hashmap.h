@@ -21,6 +21,6 @@
 #ifndef hashmap__h
 #define hashmap__h
 
-#include "hashmap/HashMap.hpp"
+#include "hashmap/HashMapClass.h"
 
 #endif // hashmap__h

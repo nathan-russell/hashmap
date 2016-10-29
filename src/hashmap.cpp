@@ -1,5 +1,6 @@
 // [[Rcpp::depends(BH)]]
-#include "../inst/include/hashmap/HashMap.hpp"
+
+#include "../inst/include/hashmap/HashMapClass.h"
 
 using namespace Rcpp;
 

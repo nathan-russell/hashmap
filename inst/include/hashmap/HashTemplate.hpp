@@ -22,9 +22,9 @@
 #define hashmap__HashTemplate__hpp
 
 #include "traits.hpp"
-#include "as_character.hpp"
 #include <boost/unordered_map.hpp>
 #include <boost/functional/hash.hpp>
+#include "HashMapClass.h"
 
 namespace hashmap {
 
@@ -39,6 +39,8 @@ inline std::string
 extractor<STRSXP>(const Rcpp::Vector<STRSXP>& vec, R_xlen_t i) {
     return Rcpp::as<std::string>(vec[i]);
 }
+
+class HashMap;
 
 template <typename KeyType, typename ValueType>
 class HashTemplate {
@@ -144,6 +146,14 @@ private:
         );
     }
 
+    Rcpp::DataFrame empty_join_result(const Rcpp::XPtr<HashMap>& ptr) const {
+        return Rcpp::DataFrame::create(
+            Rcpp::Named("Keys") = key_vec(),
+            Rcpp::Named("Values.x") = value_vec(),
+            Rcpp::Named("Values.y") = ptr->value_vector(0)
+        );
+    }
+
 public:
     HashTemplate()
         : keys_cached_(false), values_cached_(false),
@@ -191,6 +201,14 @@ public:
     bool values_cached() const { return values_cached_; }
     int key_sexptype() const { return key_rtype; }
     int value_sexptype() const { return value_rtype; }
+
+    key_vec key_vector(int n) const {
+        return key_vec(n);
+    }
+
+    value_vec value_vector(int n) const {
+        return value_vector(n);
+    }
 
     void clear() {
         map.clear();
@@ -671,33 +689,7 @@ public:
             Rcpp::Named("Values.y") = other.find(kres)
         );
     }
-
-    // TODO: move to HashMap.hpp & use XPtr<HashMap>
-    //  cannot use XPtr<HashTemplate> from R
-    //
-    // template <typename KT, typename VT> Rcpp::DataFrame
-    // left_outer_join(const Rcpp::XPtr< HashTemplate<KT, VT> >& other) const {
-    //     return left_outer_join(*other);
-    // }
 };
-
-typedef HashTemplate<std::string, std::string> ss_hash;
-typedef HashTemplate<std::string, double> sd_hash;
-typedef HashTemplate<std::string, int> si_hash;
-typedef HashTemplate<std::string, bool> sb_hash;
-typedef HashTemplate<std::string, Rcomplex> sx_hash;
-
-typedef HashTemplate<double, double> dd_hash;
-typedef HashTemplate<double, std::string> ds_hash;
-typedef HashTemplate<double, int> di_hash;
-typedef HashTemplate<double, bool> db_hash;
-typedef HashTemplate<double, Rcomplex> dx_hash;
-
-typedef HashTemplate<int, int> ii_hash;
-typedef HashTemplate<int, std::string> is_hash;
-typedef HashTemplate<int, double> id_hash;
-typedef HashTemplate<int, bool> ib_hash;
-typedef HashTemplate<int, Rcomplex> ix_hash;
 
 } // hashmap
 
