@@ -359,6 +359,26 @@ private:
         SEXP operator()(const T& t) const;
     };
 
+    struct inner_join_visitor
+        : public boost::static_visitor<SEXP>
+    {
+        const HashMap& other;
+        inner_join_visitor(const HashMap& other_);
+
+        template <typename T>
+        SEXP operator()(const T& t) const;
+    };
+
+    struct full_outer_join_visitor
+        : public boost::static_visitor<SEXP>
+    {
+        const HashMap& other;
+        full_outer_join_visitor(const HashMap& other_);
+
+        template <typename T>
+        SEXP operator()(const T& t) const;
+    };
+
     void init(SEXP x, SEXP y);
 
 public:
@@ -435,6 +455,18 @@ public:
     SEXP left_outer_join(const HashMap& other) const;
 
     SEXP left_outer_join(const Rcpp::XPtr<HashMap>& other) const;
+
+    SEXP right_outer_join(const HashMap& other) const;
+
+    SEXP right_outer_join(const Rcpp::XPtr<HashMap>& other) const;
+
+    SEXP inner_join(const HashMap& other) const;
+
+    SEXP inner_join(const Rcpp::XPtr<HashMap>& other) const;
+
+    SEXP full_outer_join(const HashMap& other) const;
+
+    SEXP full_outer_join(const Rcpp::XPtr<HashMap>& other) const;
 };
 
 } // hashmap

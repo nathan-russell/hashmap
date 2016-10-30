@@ -678,11 +678,105 @@ public:
         );
     }
 
+#define CASE_LABEL(__RTYPE__)                                   \
+    case __RTYPE__ : {                                          \
+        Rcpp::Vector<__RTYPE__> yres = other.find(kres);        \
+                                                                \
+        Rcpp::LogicalVector idx(size());                        \
+        for (R_xlen_t i = 0; i < size(); i++) {                 \
+            idx[i] = !Rcpp::traits::is_na<__RTYPE__>(yres[i]);  \
+        }                                                       \
+                                                                \
+        return Rcpp::DataFrame::create(                         \
+            Rcpp::Named("Keys") = kres[idx],                    \
+            Rcpp::Named("Values.x") = xres[idx],                \
+            Rcpp::Named("Values.y") = yres[idx]                 \
+        );                                                      \
+    }
+
+    Rcpp::DataFrame inner_join(const HashMap& other) const {
+        if (empty() || other.empty()) return empty_join_result(other);
+
+        std::string lhs_kcn = key_class_name(),
+            rhs_kcn = other.key_class_name();
+
+        if (lhs_kcn != rhs_kcn) {
+            Rcpp::warning(
+                "Attempt to join different key types: %s and %s\n",
+                lhs_kcn.c_str(),
+                rhs_kcn.c_str()
+            );
+            return empty_join_result(other);
+        }
+
+        key_vec kres = keys();
+        value_vec xres = values();
+        const int yvr_type = other.value_sexptype();
+
+        switch (yvr_type) {
+            CASE_LABEL(INTSXP)
+            CASE_LABEL(REALSXP)
+            CASE_LABEL(STRSXP)
+            CASE_LABEL(CPLXSXP)
+            CASE_LABEL(LGLSXP)
+            default: {
+                return empty_join_result(other);
+            }
+        }
+
+        return empty_join_result(other);
+    }
+
+#undef CASE_LABEL
+
     template <typename KT, typename VT>
     Rcpp::DataFrame full_outer_join(const HashTemplate<KT, VT>& other) const {
         if (empty() && other.empty()) return empty_join_result(other);
         if (empty()) return other.left_outer_join(*this);
         if (other.empty()) return left_outer_join(other);
+
+        std::string lhs_kcn = key_class_name(),
+            rhs_kcn = other.key_class_name();
+
+        if (lhs_kcn != rhs_kcn) {
+            Rcpp::warning(
+                "Attempt to join different key types: %s and %s\n",
+                lhs_kcn.c_str(),
+                rhs_kcn.c_str()
+            );
+            return empty_join_result(other);
+        }
+
+        R_xlen_t i = 0, j = 0, usz = size() + other.size();
+        key_vec ukeys(usz), xkeys = keys(), ykeys = other.keys();
+
+        for ( ; i < size(); i++) {
+            ukeys[i] = xkeys[i];
+        }
+        for ( ; i < usz; i++, j++) {
+            ukeys[i] = ykeys[j];
+        }
+
+        key_vec kres = Rcpp::unique(ukeys);
+
+        return Rcpp::DataFrame::create(
+            Rcpp::Named("Keys") = kres,
+            Rcpp::Named("Values.x") = find(kres),
+            Rcpp::Named("Values.y") = other.find(kres)
+        );
+    }
+
+    Rcpp::DataFrame full_outer_join(const HashMap& other) const {
+        if (empty() && other.empty()) return empty_join_result(other);
+        if (other.empty()) return left_outer_join(other);
+
+        if (empty()) {
+            return Rcpp::DataFrame::create(
+                Rcpp::Named("Keys") = other.keys(),
+                Rcpp::Named("Values.x") = other.values(),
+                Rcpp::Named("Values.y") = na_value_vector(other.size())
+            );
+        }
 
         std::string lhs_kcn = key_class_name(),
             rhs_kcn = other.key_class_name();
