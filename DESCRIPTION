@@ -33,6 +33,7 @@ Collate:
     'RcppExports.R'
     'clone.R'
     'load_hashmap.R'
+    'merge.R'
     'plugin.R'
     'save_hashmap.R'
     'zzz.R'

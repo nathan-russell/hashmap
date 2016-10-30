@@ -77,9 +77,10 @@ setMethod("show", "Rcpp_Hashmap",
     }
 )
 
-#' @rdname plot
+#' @rdname plot.Rcpp_Hashmap
 #' @title Plot method for Hashmap class
 #' @name plot
+#' @aliases plot
 #' @description Plot method for Hashmap class
 #' @param x an object created by a call to \code{hashmap}
 #' @param \dots arguments passed to \code{plot}
