@@ -146,11 +146,11 @@ private:
         );
     }
 
-    Rcpp::DataFrame empty_join_result(const Rcpp::XPtr<HashMap>& ptr) const {
+    Rcpp::DataFrame empty_join_result(const HashMap& ptr) const {
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = key_vec(),
             Rcpp::Named("Values.x") = value_vec(),
-            Rcpp::Named("Values.y") = ptr->value_vector(0)
+            Rcpp::Named("Values.y") = ptr.value_vector(0)
         );
     }
 
@@ -591,6 +591,31 @@ public:
 
     template <typename KT, typename VT>
     Rcpp::DataFrame left_outer_join(const HashTemplate<KT, VT>& other) const {
+        if (empty()) return empty_join_result(other);
+
+        Rcpp::DataFrame res = Rcpp::DataFrame::create(
+            Rcpp::Named("Keys") = keys(),
+            Rcpp::Named("Values.x") = values(),
+            Rcpp::Named("Values.y") = other.na_value_vector(size())
+        );
+
+        std::string lhs_kcn = key_class_name(),
+            rhs_kcn = other.key_class_name();
+
+        if (lhs_kcn != rhs_kcn) {
+            Rcpp::warning(
+                "Attempt to join different key types: %s and %s\n",
+                lhs_kcn.c_str(),
+                rhs_kcn.c_str()
+            );
+            return res;
+        }
+
+        res[2] = other.find(kvec);
+        return res;
+    }
+
+    Rcpp::DataFrame left_outer_join(const HashMap& other) const {
         if (empty()) return empty_join_result(other);
 
         Rcpp::DataFrame res = Rcpp::DataFrame::create(

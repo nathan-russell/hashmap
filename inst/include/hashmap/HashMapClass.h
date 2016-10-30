@@ -1,6 +1,6 @@
 // vim: set softtabstop=4:expandtab:number:syntax on:wildmenu:showmatch
 //
-// HashMap.h
+// HashMapClass.h
 //
 // Copyright (C) 2016 Nathan Russell
 //
@@ -18,8 +18,8 @@
 // along with hashmap. If not, see
 // <https://opensource.org/licenses/MIT>.
 
-#ifndef hashmap__HashMap__h
-#define hashmap__HashMap__h
+#ifndef hashmap__HashMapClass__h
+#define hashmap__HashMapClass__h
 
 #include <Rcpp.h>
 #include <boost/variant.hpp>
@@ -154,6 +154,16 @@ private:
     {
         int n;
         value_vector_visitor(int n_);
+
+        template <typename T>
+        SEXP operator()(const T& t) const;
+    };
+
+    struct na_value_vector_visitor
+        : public boost::static_visitor<SEXP>
+    {
+        int n;
+        na_value_vector_visitor(int n_);
 
         template <typename T>
         SEXP operator()(const T& t) const;
@@ -325,15 +335,29 @@ private:
         SEXP operator()(const T& t) const;
     };
 
-    // struct left_outer_join_visitor
-    //     : public boost::static_visitor<SEXP>
-    // {
-    //     const HashMap& other;
-    //     left_outer_join_visitor(const HashMap& other_);
-    //
-    //     template <typename T>
-    //     SEXP operator()(const T& t) const;
-    // };
+    struct key_class_name_visitor
+        : public boost::static_visitor<std::string>
+    {
+        template <typename T>
+        std::string operator()(const T& t) const;
+    };
+
+    struct value_class_name_visitor
+        : public boost::static_visitor<std::string>
+    {
+        template <typename T>
+        std::string operator()(const T& t) const;
+    };
+
+    struct left_outer_join_visitor
+        : public boost::static_visitor<SEXP>
+    {
+        const HashMap& other;
+        left_outer_join_visitor(const HashMap& other_);
+
+        template <typename T>
+        SEXP operator()(const T& t) const;
+    };
 
     void init(SEXP x, SEXP y);
 
@@ -363,6 +387,8 @@ public:
     SEXP key_vector(int n) const;
 
     SEXP value_vector(int n) const;
+
+    SEXP na_value_vector(int n) const;
 
     void clear();
 
@@ -402,11 +428,15 @@ public:
 
     SEXP data_frame() const;
 
-    // SEXP left_outer_join(const HashMap& other) const;
-    //
-    // SEXP left_outer_join(const Rcpp::XPtr<HashMap>& other) const;
+    std::string key_class_name() const;
+
+    std::string value_class_name() const;
+
+    SEXP left_outer_join(const HashMap& other) const;
+
+    SEXP left_outer_join(const Rcpp::XPtr<HashMap>& other) const;
 };
 
 } // hashmap
 
-#endif // hashmap__HashMap__h
+#endif // hashmap__HashMapClass__h

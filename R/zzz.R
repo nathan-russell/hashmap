@@ -17,6 +17,8 @@
         options(hm_opts[new_opts])
     }
 
+    Rcpp::registerPlugin("hashmap", plugin)
+
     invisible()
 }
 

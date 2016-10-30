@@ -32,6 +32,7 @@ Collate:
     'Hashmap-class.R'
     'clone.R'
     'load_hashmap.R'
+    'plugin.R'
     'save_hashmap.R'
     'zzz.R'
 RoxygenNote: 5.0.1

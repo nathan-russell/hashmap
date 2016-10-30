@@ -85,6 +85,16 @@ SEXP HashMap::value_vector_visitor::operator()(const T& t) const
     return t->value_vector(n);
 }
 
+HashMap::na_value_vector_visitor::na_value_vector_visitor(int n_)
+    : n(n_)
+{}
+
+template <typename T>
+SEXP HashMap::na_value_vector_visitor::operator()(const T& t) const
+{
+    return t->na_value_vector(n);
+}
+
 template <typename T>
 void HashMap::clear_visitor::operator()(T& t)
 {
@@ -243,15 +253,27 @@ SEXP HashMap::data_frame_visitor::operator()(const T& t) const
     return Rcpp::wrap(t->data_frame());
 }
 
-// HashMap::left_outer_join_visitor::left_outer_join_visitor(const HashMap& other_)
-//     : other(other_)
-// {}
+template <typename T>
+std::string HashMap::key_class_name_visitor::operator()(const T& t) const
+{
+    return t->key_class_name();
+}
 
-// template <typename T>
-// SEXP HashMap::left_outer_join_visitor::operator()(const T& t) const
-// {
-//     return Rcpp::wrap(t->left_outer_join(other.variant));
-// }
+template <typename T>
+std::string HashMap::value_class_name_visitor::operator()(const T& t) const
+{
+    return t->value_class_name();
+}
+
+HashMap::left_outer_join_visitor::left_outer_join_visitor(const HashMap& other_)
+    : other(other_)
+{}
+
+template <typename T>
+SEXP HashMap::left_outer_join_visitor::operator()(const T& t) const
+{
+    return Rcpp::wrap(t->left_outer_join(other));
+}
 
 void HashMap::init(SEXP x, SEXP y)
 {
@@ -402,14 +424,6 @@ HashMap::HashMap(SEXP x, SEXP y)
     init(x, y);
 }
 
-// HashMap::HashMap(const HashMap& other)
-//     : variant(boost::apply_visitor(clone_visitor(), other.variant))
-// {}
-
-// HashMap::HashMap(const Rcpp::XPtr<HashMap>& ptr)
-//     : variant(boost::apply_visitor(clone_visitor(), ptr->variant))
-// {}
-
 HashMap::HashMap(const Rcpp::XPtr<HashMap>& ptr)
 {
     init(Rcpp::clone(ptr->keys()), Rcpp::clone(ptr->values()));
@@ -417,7 +431,6 @@ HashMap::HashMap(const Rcpp::XPtr<HashMap>& ptr)
 
 HashMap HashMap::clone() const
 {
-    //return HashMap(*this);
     return HashMap(Rcpp::clone(keys()), Rcpp::clone(values()));
 }
 
@@ -466,6 +479,12 @@ SEXP HashMap::key_vector(int n) const
 SEXP HashMap::value_vector(int n) const
 {
     value_vector_visitor v(n);
+    return boost::apply_visitor(v, variant);
+}
+
+SEXP HashMap::na_value_vector(int n) const
+{
+    na_value_vector_visitor v(n);
     return boost::apply_visitor(v, variant);
 }
 
@@ -582,16 +601,26 @@ SEXP HashMap::data_frame() const
     return boost::apply_visitor(v, variant);
 }
 
-// SEXP HashMap::left_outer_join(const HashMap& other) const
-// {
-//     left_outer_join_visitor v(other);
-//     return boost::apply_visitor(v, variant);
-// }
-//
-// SEXP HashMap::left_outer_join(const Rcpp::XPtr<HashMap>& other) const
-// {
-//     left_outer_join_visitor v(*other);
-//     return boost::apply_visitor(v, variant);
-// }
+std::string HashMap::key_class_name() const
+{
+    return boost::apply_visitor(key_class_name_visitor(), variant);
+}
+
+std::string HashMap::value_class_name() const
+{
+    return boost::apply_visitor(value_class_name_visitor(), variant);
+}
+
+SEXP HashMap::left_outer_join(const HashMap& other) const
+{
+    left_outer_join_visitor v(other);
+    return boost::apply_visitor(v, variant);
+}
+
+SEXP HashMap::left_outer_join(const Rcpp::XPtr<HashMap>& other) const
+{
+    left_outer_join_visitor v(*other);
+    return boost::apply_visitor(v, variant);
+}
 
 } // hashmap
