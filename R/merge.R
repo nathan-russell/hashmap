@@ -73,10 +73,7 @@
 
 #' @method merge Rcpp_Hashmap
 #' @export
-merge.Rcpp_Hashmap <- function(x, y,
-                               type = c("inner", "left", "right", "full"),
-                               ...)
-{
+merge.Rcpp_Hashmap <- function(x, y, type = c("inner", "left", "right", "full"), ...) {
     type <- match.arg(type)
 
     if (!inherits(x, "Rcpp_Hashmap")) {
@@ -95,12 +92,10 @@ merge.Rcpp_Hashmap <- function(x, y,
         stop(msg)
     }
 
-    fn <- switch(type,
+    switch(type,
         inner = .inner_join_impl,
         left = .left_outer_join_impl,
         right = .right_outer_join_impl,
         full = .full_outer_join_impl
-    )
-
-    fn(x$.pointer, y$.pointer)
+    )(x$.pointer, y$.pointer)
 }
