@@ -562,7 +562,7 @@ public:
     }
 
     value_vec na_value_vector(R_xlen_t sz) const {
-        value_vec res(sz, value_na());
+        value_vec res((int)sz, value_na());
         set_value_attr(res);
         return res;
     }
