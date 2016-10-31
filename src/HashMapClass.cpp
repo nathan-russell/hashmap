@@ -275,6 +275,16 @@ SEXP HashMap::left_outer_join_visitor::operator()(const T& t) const
     return Rcpp::wrap(t->left_outer_join(other));
 }
 
+HashMap::right_outer_join_visitor::right_outer_join_visitor(const HashMap& other_)
+    : other(other_)
+{}
+
+template <typename T>
+SEXP HashMap::right_outer_join_visitor::operator()(const T& t) const
+{
+    return Rcpp::wrap(t->right_outer_join(other));
+}
+
 HashMap::inner_join_visitor::inner_join_visitor(const HashMap& other_)
     : other(other_)
 {}
@@ -645,12 +655,14 @@ SEXP HashMap::left_outer_join(const Rcpp::XPtr<HashMap>& other) const
 
 SEXP HashMap::right_outer_join(const HashMap& other) const
 {
-    return other.left_outer_join(*this);
+    right_outer_join_visitor v(other);
+    return boost::apply_visitor(v, variant);
 }
 
 SEXP HashMap::right_outer_join(const Rcpp::XPtr<HashMap>& other) const
 {
-    return other->left_outer_join(*this);
+    right_outer_join_visitor v(*other);
+    return boost::apply_visitor(v, variant);
 }
 
 SEXP HashMap::inner_join(const HashMap& other) const

@@ -359,6 +359,16 @@ private:
         SEXP operator()(const T& t) const;
     };
 
+    struct right_outer_join_visitor
+        : public boost::static_visitor<SEXP>
+    {
+        const HashMap& other;
+        right_outer_join_visitor(const HashMap& other_);
+
+        template <typename T>
+        SEXP operator()(const T& t) const;
+    };
+
     struct inner_join_visitor
         : public boost::static_visitor<SEXP>
     {

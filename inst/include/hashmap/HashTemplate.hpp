@@ -133,7 +133,7 @@ private:
         } else if (posix_values.is) {
             x.attr("class") =
                 Rcpp::CharacterVector::create("POSIXct", "POSIXt");
-            x.attr("tzone") = posix_keys.tz;
+            x.attr("tzone") = posix_values.tz;
         }
     }
 
@@ -642,7 +642,57 @@ public:
 
     template <typename KT, typename VT>
     Rcpp::DataFrame right_outer_join(const HashTemplate<KT, VT>& other) const {
-        return other.left_outer_join(*this);
+        if (other.empty()) return empty_join_result(other);
+
+        Rcpp::DataFrame res = Rcpp::DataFrame::create(
+            Rcpp::Named("Keys") = other.keys(),
+            Rcpp::Named("Values.x") = na_value_vector(other.size()),
+            Rcpp::Named("Values.y") = other.values()
+        );
+
+        if (empty()) return res;
+
+        std::string lhs_kcn = key_class_name(),
+            rhs_kcn = other.key_class_name();
+
+        if (lhs_kcn != rhs_kcn) {
+            Rcpp::warning(
+                "Attempt to join different key types: %s and %s\n",
+                lhs_kcn.c_str(),
+                rhs_kcn.c_str()
+            );
+            return res;
+        }
+
+        res[1] = find(other.keys());
+        return res;
+    }
+
+    Rcpp::DataFrame right_outer_join(const HashMap& other) const {
+        if (other.empty()) return empty_join_result(other);
+
+        Rcpp::DataFrame res = Rcpp::DataFrame::create(
+            Rcpp::Named("Keys") = other.keys(),
+            Rcpp::Named("Values.x") = na_value_vector(other.size()),
+            Rcpp::Named("Values.y") = other.values()
+        );
+
+        if (empty()) return res;
+
+        std::string lhs_kcn = key_class_name(),
+            rhs_kcn = other.key_class_name();
+
+        if (lhs_kcn != rhs_kcn) {
+            Rcpp::warning(
+                "Attempt to join different key types: %s and %s\n",
+                lhs_kcn.c_str(),
+                rhs_kcn.c_str()
+            );
+            return res;
+        }
+
+        res[1] = find(other.keys());
+        return res;
     }
 
     template <typename KT, typename VT>
