@@ -142,7 +142,8 @@ private:
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = key_vec(),
             Rcpp::Named("Values.x") = value_vec(),
-            Rcpp::Named("Values.y") = typename HashTemplate<KT, VT>::value_vec()
+            Rcpp::Named("Values.y") = typename HashTemplate<KT, VT>::value_vec(),
+            Rcpp::Named("stringsAsFactors") = false
         );
     }
 
@@ -150,7 +151,8 @@ private:
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = key_vec(),
             Rcpp::Named("Values.x") = value_vec(),
-            Rcpp::Named("Values.y") = ptr.value_vector(0)
+            Rcpp::Named("Values.y") = ptr.value_vector(0),
+            Rcpp::Named("stringsAsFactors") = false
         );
     }
 
@@ -531,27 +533,31 @@ public:
         if (keys_cached_ && values_cached_) {
             return Rcpp::DataFrame::create(
                 Rcpp::Named("Keys") = kvec,
-                Rcpp::Named("Values") = vvec
+                Rcpp::Named("Values") = vvec,
+                Rcpp::Named("stringsAsFactors") = false
             );
         }
 
         if (keys_cached_) {
             return Rcpp::DataFrame::create(
                 Rcpp::Named("Keys") = kvec,
-                Rcpp::Named("Values") = values()
+                Rcpp::Named("Values") = values(),
+                Rcpp::Named("stringsAsFactors") = false
             );
         }
 
         if (values_cached_) {
             return Rcpp::DataFrame::create(
                 Rcpp::Named("Keys") = keys(),
-                Rcpp::Named("Values") = vvec
+                Rcpp::Named("Values") = vvec,
+                Rcpp::Named("stringsAsFactors") = false
             );
         }
 
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = keys(),
-            Rcpp::Named("Values") = values()
+            Rcpp::Named("Values") = values(),
+            Rcpp::Named("stringsAsFactors") = false
         );
     }
 
@@ -596,7 +602,8 @@ public:
         Rcpp::DataFrame res = Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = keys(),
             Rcpp::Named("Values.x") = values(),
-            Rcpp::Named("Values.y") = other.na_value_vector(size())
+            Rcpp::Named("Values.y") = other.na_value_vector(size()),
+            Rcpp::Named("stringsAsFactors") = false
         );
 
         std::string lhs_kcn = key_class_name(),
@@ -621,7 +628,8 @@ public:
         Rcpp::DataFrame res = Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = keys(),
             Rcpp::Named("Values.x") = values(),
-            Rcpp::Named("Values.y") = other.na_value_vector(size())
+            Rcpp::Named("Values.y") = other.na_value_vector(size()),
+            Rcpp::Named("stringsAsFactors") = false
         );
 
         std::string lhs_kcn = key_class_name(),
@@ -647,7 +655,8 @@ public:
         Rcpp::DataFrame res = Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = other.keys(),
             Rcpp::Named("Values.x") = na_value_vector(other.size()),
-            Rcpp::Named("Values.y") = other.values()
+            Rcpp::Named("Values.y") = other.values(),
+            Rcpp::Named("stringsAsFactors") = false
         );
 
         if (empty()) return res;
@@ -674,7 +683,8 @@ public:
         Rcpp::DataFrame res = Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = other.keys(),
             Rcpp::Named("Values.x") = na_value_vector(other.size()),
-            Rcpp::Named("Values.y") = other.values()
+            Rcpp::Named("Values.y") = other.values(),
+            Rcpp::Named("stringsAsFactors") = false
         );
 
         if (empty()) return res;
@@ -717,14 +727,15 @@ public:
         const int yvr_type = HashTemplate<KT, VT>::value_rtype;
 
         Rcpp::LogicalVector idx(size());
-        for (R_xlen_t i = 0; i < size(); i++) {
+        for (size_type i = 0; i < size(); i++) {
             idx[i] = !Rcpp::traits::is_na<yvr_type>(yres[i]);
         }
 
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = kres[idx],
             Rcpp::Named("Values.x") = xres[idx],
-            Rcpp::Named("Values.y") = yres[idx]
+            Rcpp::Named("Values.y") = yres[idx],
+            Rcpp::Named("stringsAsFactors") = false
         );
     }
 
@@ -733,14 +744,15 @@ public:
         Rcpp::Vector<__RTYPE__> yres = other.find(kres);        \
                                                                 \
         Rcpp::LogicalVector idx(size());                        \
-        for (R_xlen_t i = 0; i < size(); i++) {                 \
+        for (size_type i = 0; i < size(); i++) {                \
             idx[i] = !Rcpp::traits::is_na<__RTYPE__>(yres[i]);  \
         }                                                       \
                                                                 \
         return Rcpp::DataFrame::create(                         \
             Rcpp::Named("Keys") = kres[idx],                    \
             Rcpp::Named("Values.x") = xres[idx],                \
-            Rcpp::Named("Values.y") = yres[idx]                 \
+            Rcpp::Named("Values.y") = yres[idx],                \
+            Rcpp::Named("stringsAsFactors") = false             \
         );                                                      \
     }
 
@@ -797,7 +809,7 @@ public:
             return empty_join_result(other);
         }
 
-        R_xlen_t i = 0, j = 0, usz = size() + other.size();
+        size_type i = 0, j = 0, usz = size() + other.size();
         key_vec ukeys(usz), xkeys = keys(), ykeys = other.keys();
 
         for ( ; i < size(); i++) {
@@ -812,7 +824,8 @@ public:
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = kres,
             Rcpp::Named("Values.x") = find(kres),
-            Rcpp::Named("Values.y") = other.find(kres)
+            Rcpp::Named("Values.y") = other.find(kres),
+            Rcpp::Named("stringsAsFactors") = false
         );
     }
 
@@ -824,7 +837,8 @@ public:
             return Rcpp::DataFrame::create(
                 Rcpp::Named("Keys") = other.keys(),
                 Rcpp::Named("Values.x") = other.values(),
-                Rcpp::Named("Values.y") = na_value_vector(other.size())
+                Rcpp::Named("Values.y") = na_value_vector(other.size()),
+                Rcpp::Named("stringsAsFactors") = false
             );
         }
 
@@ -840,7 +854,7 @@ public:
             return empty_join_result(other);
         }
 
-        R_xlen_t i = 0, j = 0, usz = size() + other.size();
+        size_type i = 0, j = 0, usz = size() + other.size();
         key_vec ukeys(usz), xkeys = keys(), ykeys = other.keys();
 
         for ( ; i < size(); i++) {
@@ -855,7 +869,8 @@ public:
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = kres,
             Rcpp::Named("Values.x") = find(kres),
-            Rcpp::Named("Values.y") = other.find(kres)
+            Rcpp::Named("Values.y") = other.find(kres),
+            Rcpp::Named("stringsAsFactors") = false
         );
     }
 };
