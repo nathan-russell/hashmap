@@ -105,7 +105,7 @@ template <typename T>
 std::size_t HashMap::bucket_count_visitor::operator()(const T& t) const
 {
     return t->bucket_count();
-};
+}
 
 HashMap::rehash_visitor::rehash_visitor(std::size_t n_)
     : n(n_)

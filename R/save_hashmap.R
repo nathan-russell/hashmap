@@ -7,7 +7,7 @@
 #'  specified file, which can be passed to \code{\link{load_hashmap}} at a
 #'  later point in time to recreate the object.
 #'
-#' @usage save_hashmap(x, file, overwrite = TRUE)
+#' @usage save_hashmap(x, file, overwrite = TRUE, compress = FALSE)
 #'
 #' @param x an object created by a call to \code{hashmap}.
 #'
@@ -17,11 +17,15 @@
 #'  it will be overwritten. If \code{FALSE} and \code{file} exists, an
 #'  error is thrown.
 #'
+#' @param compress a logical value or the type of file compression to use;
+#'  defaults to \code{FALSE} for better performance. See \code{?saveRDS}
+#'  for details.
+#'
 #' @return Nothing on success; an error on failure.
 #'
 #' @details Saving is done by calling \code{base::saveRDS} on the object's
 #'  \code{data.frame} representation, \code{x$data.frame()}. Attempting to
-#'  save an empty \code{Hashamp} results in an error.
+#'  save an empty \code{Hashmap} results in an error.
 #'
 #' @seealso \code{\link{load_hashmap}}, \code{\link{saveRDS}}
 #'
@@ -42,7 +46,7 @@
 #' load_hashmap(tf)
 
 #' @export save_hashmap
-save_hashmap <- function(x, file, overwrite = TRUE) {
+save_hashmap <- function(x, file, overwrite = TRUE, compress = FALSE) {
     if (!inherits(x, "Rcpp_Hashmap")) {
         msg <- sprintf(
             "Object '%s' is not a hashmap.",
@@ -63,5 +67,5 @@ save_hashmap <- function(x, file, overwrite = TRUE) {
         stop(msg)
     }
 
-    saveRDS(x$data.frame(), file)
+    saveRDS(x$data.frame(), file, compress = compress)
 }
