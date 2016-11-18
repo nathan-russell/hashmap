@@ -820,6 +820,7 @@ public:
         }
 
         key_vec kres = Rcpp::unique(ukeys);
+        set_key_attr(kres);
 
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = kres,
@@ -865,6 +866,7 @@ public:
         }
 
         key_vec kres = Rcpp::unique(ukeys);
+        set_key_attr(kres);
 
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = kres,
