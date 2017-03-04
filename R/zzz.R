@@ -1,5 +1,5 @@
-#' @useDynLib hashmap
-#' @exportPattern "^[[:alpha:]]+"
+#' @useDynLib hashmap, .registration = TRUE
+# @exportPattern "^[[:alpha:]]+"
 #' @importFrom Rcpp evalCpp
 #' @importFrom Rcpp cpp_object_initializer
 #' @importFrom Rcpp sourceCpp
@@ -17,9 +17,8 @@
         options(hm_opts[new_opts])
     }
 
+    Rcpp::loadModule("Hashmap", TRUE)
     Rcpp::registerPlugin("hashmap", .plugin)
 
     invisible()
 }
-
-
