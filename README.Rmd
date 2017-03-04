@@ -19,7 +19,7 @@ hashmap
 
 [![Travis-CI Build Status](https://travis-ci.org/nathan-russell/hashmap.svg?branch=master)](https://travis-ci.org/nathan-russell/hashmap) 
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/hashmap)](http://cran.r-project.org/package=hashmap) 
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/hashmap)](https://cran.r-project.org/package=hashmap) 
 
 
 ### Motivation 
