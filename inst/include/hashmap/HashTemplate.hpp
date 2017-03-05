@@ -30,15 +30,13 @@ namespace hashmap {
 
 template <int RTYPE>
 inline typename traits::cpp_traits<RTYPE>::type
-extractor(const Rcpp::Vector<RTYPE>& vec, R_xlen_t i) {
-    return vec[i];
-}
+extractor(const Rcpp::Vector<RTYPE>& vec, R_xlen_t i)
+{ return vec[i]; }
 
 template <>
 inline std::string
-extractor<STRSXP>(const Rcpp::Vector<STRSXP>& vec, R_xlen_t i) {
-    return Rcpp::as<std::string>(vec[i]);
-}
+extractor<STRSXP>(const Rcpp::Vector<STRSXP>& vec, R_xlen_t i)
+{ return Rcpp::as<std::string>(vec[i]); }
 
 class HashMap;
 
@@ -63,8 +61,11 @@ public:
 private:
     map_t map;
 
-    key_t key_na() const { return traits::get_na<key_t>(); }
-    value_t value_na() const { return traits::get_na<value_t>(); }
+    key_t key_na() const
+    { return traits::get_na<key_t>(); }
+
+    value_t value_na() const
+    { return traits::get_na<value_t>(); }
 
     mutable bool keys_cached_;
     mutable bool values_cached_;
@@ -90,7 +91,8 @@ private:
         }
 
         posix_t()
-            : is(false), tz(R_NilValue)
+            : is(false),
+              tz(R_NilValue)
         {}
 
         posix_t(const posix_t& other)
@@ -102,10 +104,15 @@ private:
     posix_t posix_keys;
     posix_t posix_values;
 
-    HashTemplate(const map_t& xmap, bool xkeys_cached_, bool xvalues_cached_,
-                 const key_vec& xkvec, const value_vec& xvvec,
-                 bool xdate_keys, bool xdate_values,
-                 const posix_t& xposix_keys, const posix_t& xposix_values)
+    HashTemplate(const map_t& xmap,
+                 bool xkeys_cached_,
+                 bool xvalues_cached_,
+                 const key_vec& xkvec,
+                 const value_vec& xvvec,
+                 bool xdate_keys,
+                 bool xdate_values,
+                 const posix_t& xposix_keys,
+                 const posix_t& xposix_values)
         : map(xmap),
           keys_cached_(xkeys_cached_),
           values_cached_(xvalues_cached_),
@@ -117,7 +124,8 @@ private:
           posix_values(xposix_values)
     {}
 
-    void set_key_attr(key_vec& x) const {
+    void set_key_attr(key_vec& x) const
+    {
         if (date_keys) {
             x.attr("class") = "Date";
         } else if (posix_keys.is) {
@@ -127,7 +135,8 @@ private:
         }
     }
 
-    void set_value_attr(value_vec& x) const {
+    void set_value_attr(value_vec& x) const
+    {
         if (date_values) {
             x.attr("class") = "Date";
         } else if (posix_values.is) {
@@ -138,7 +147,8 @@ private:
     }
 
     template <typename KT, typename VT>
-    Rcpp::DataFrame empty_join_result(const HashTemplate<KT, VT>& other) const {
+    Rcpp::DataFrame empty_join_result(const HashTemplate<KT, VT>& other) const
+    {
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = key_vec(),
             Rcpp::Named("Values.x") = value_vec(),
@@ -147,7 +157,8 @@ private:
         );
     }
 
-    Rcpp::DataFrame empty_join_result(const HashMap& ptr) const {
+    Rcpp::DataFrame empty_join_result(const HashMap& ptr) const
+    {
         return Rcpp::DataFrame::create(
             Rcpp::Named("Keys") = key_vec(),
             Rcpp::Named("Values.x") = value_vec(),
@@ -158,17 +169,22 @@ private:
 
 public:
     HashTemplate()
-        : keys_cached_(false), values_cached_(false),
-          date_keys(false), date_values(false),
-          posix_keys(posix_t()), posix_values(posix_t())
+        : keys_cached_(false),
+          values_cached_(false),
+          date_keys(false),
+          date_values(false),
+          posix_keys(posix_t()),
+          posix_values(posix_t())
     {
         kvec = key_vec(0);
         vvec = value_vec(0);
     }
 
     HashTemplate(const key_vec& keys_, const value_vec& values_)
-        : keys_cached_(false), values_cached_(false),
-          posix_keys(keys_), posix_values(values_)
+        : keys_cached_(false),
+          values_cached_(false),
+          posix_keys(keys_),
+          posix_values(values_)
     {
         R_xlen_t nk = keys_.size(), nv = values_.size(), i = 0, n;
         if (nk != nv) {
@@ -180,7 +196,7 @@ public:
         kvec = key_vec(n);
         vvec = value_vec(n);
 
-        for ( ; i < n; i++) {
+        for (; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             map[extractor(keys_, i)] = extractor(values_, i);
         }
@@ -189,7 +205,8 @@ public:
         date_values = Rf_inherits(values_, "Date");
     }
 
-    HashTemplate clone() const {
+    HashTemplate clone() const
+    {
         return HashTemplate(
             map, keys_cached_, values_cached_,
             kvec, vvec, date_keys, date_values,
@@ -197,37 +214,53 @@ public:
         );
     }
 
-    size_type size() const { return map.size(); }
-    bool empty() const { return map.empty(); }
-    bool keys_cached() const { return keys_cached_; }
-    bool values_cached() const { return values_cached_; }
-    int key_sexptype() const { return key_rtype; }
-    int value_sexptype() const { return value_rtype; }
+    size_type size() const
+    { return map.size(); }
 
-    key_vec key_vector(int n) const {
-        return key_vec(n);
-    }
+    bool empty() const
+    { return map.empty(); }
 
-    value_vec value_vector(int n) const {
-        return value_vector(n);
-    }
+    bool keys_cached() const
+    { return keys_cached_; }
 
-    void clear() {
+    bool values_cached() const
+    { return values_cached_; }
+
+    int key_sexptype() const
+    { return key_rtype; }
+
+    int value_sexptype() const
+    { return value_rtype; }
+
+    key_vec key_vector(int n) const
+    { return key_vec(n); }
+
+    value_vec value_vector(int n) const
+    { return value_vector(n); }
+
+    void clear()
+    {
         map.clear();
         keys_cached_ = false;
         values_cached_ = false;
     }
 
-    size_type bucket_count() const { return map.bucket_count(); }
-    void rehash(size_type n) { map.rehash(n); }
-    void reserve(size_type n) { map.reserve(n); }
+    size_type bucket_count() const
+    { return map.bucket_count(); }
 
-    Rcpp::Vector<INTSXP> hash_value(const key_vec& keys_) const {
+    void rehash(size_type n)
+    { map.rehash(n); }
+
+    void reserve(size_type n)
+    { map.reserve(n); }
+
+    Rcpp::Vector<INTSXP> hash_value(const key_vec& keys_) const
+    {
         R_xlen_t i = 0, nk = keys_.size();
         Rcpp::Vector<INTSXP> res = Rcpp::no_init_vector(nk);
         hasher h;
 
-        for ( ; i < nk; i++) {
+        for (; i < nk; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             res[i] = h(extractor(keys_, i));
         }
@@ -235,7 +268,8 @@ public:
         return res;
     }
 
-    void insert(const key_vec& keys_, const value_vec& values_) {
+    void insert(const key_vec& keys_, const value_vec& values_)
+    {
         R_xlen_t nk = keys_.size(), nv = values_.size(), i = 0, n;
         if (nk != nv) {
             Rcpp::warning("length(keys) != length(values)!");
@@ -244,17 +278,22 @@ public:
         keys_cached_ = false;
         values_cached_ = false;
 
-        for ( ; i < n; i++) {
+        for (; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             map[extractor(keys_, i)] = extractor(values_, i);
         }
     }
 
-    void insert(SEXP keys_, SEXP values_) {
-        insert(Rcpp::as<key_vec>(keys_), Rcpp::as<value_vec>(values_));
+    void insert(SEXP keys_, SEXP values_)
+    {
+        insert(
+            Rcpp::as<key_vec>(keys_),
+            Rcpp::as<value_vec>(values_)
+        );
     }
 
-    key_vec keys() const {
+    key_vec keys() const
+    {
         if (keys_cached_) {
             return kvec;
         }
@@ -275,7 +314,8 @@ public:
         return res;
     }
 
-    key_vec keys_n(int nx) const {
+    key_vec keys_n(int nx) const
+    {
         if (nx < 0) nx = 0;
         if ((size_type)nx > map.size()) nx = map.size();
 
@@ -298,7 +338,8 @@ public:
         return res;
     }
 
-    value_vec values() const {
+    value_vec values() const
+    {
         if (values_cached_) {
             return vvec;
         }
@@ -319,7 +360,8 @@ public:
         return res;
     }
 
-    value_vec values_n(int nx) const {
+    value_vec values_n(int nx) const
+    {
         if (nx < 0) nx = 0;
         if ((size_type)nx > map.size()) nx = map.size();
 
@@ -342,7 +384,8 @@ public:
         return res;
     }
 
-    void cache_keys() {
+    void cache_keys()
+    {
         if (keys_cached_) return;
 
         R_xlen_t i = 0, n = map.size();
@@ -351,7 +394,7 @@ public:
         }
 
         const_iterator first = map.begin(), last = map.end();
-        for ( ; first != last; ++first) {
+        for (; first != last; ++first) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             kvec[i++] = first->first;
         }
@@ -360,7 +403,8 @@ public:
         keys_cached_ = true;
     }
 
-    void cache_values() {
+    void cache_values()
+    {
         if (values_cached_) return;
 
         R_xlen_t i = 0, n = map.size();
@@ -369,7 +413,7 @@ public:
         }
 
         const_iterator first = map.begin(), last = map.end();
-        for ( ; first != last; ++first) {
+        for (; first != last; ++first) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             vvec[i++] = first->second;
         }
@@ -378,10 +422,11 @@ public:
         values_cached_ = true;
     }
 
-    void erase(const key_vec& keys_) {
+    void erase(const key_vec& keys_)
+    {
         R_xlen_t i = 0, n = keys_.size();
 
-        for ( ; i < n; i++) {
+        for (; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             map.erase(extractor(keys_, i));
         }
@@ -390,12 +435,13 @@ public:
         values_cached_ = false;
     }
 
-    value_vec find(const key_vec& keys_) const {
+    value_vec find(const key_vec& keys_) const
+    {
         R_xlen_t i = 0, n = keys_.size();
         value_vec res(n);
         const_iterator last = map.end();
 
-        for ( ; i < n; i++) {
+        for (; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             const_iterator pos = map.find(extractor(keys_, i));
             if (pos != last) {
@@ -409,24 +455,22 @@ public:
         return res;
     }
 
-    value_vec find(SEXP keys_) const {
-        return find(Rcpp::as<key_vec>(keys_));
-    }
+    value_vec find(SEXP keys_) const
+    { return find(Rcpp::as<key_vec>(keys_)); }
 
-    bool has_key(const key_vec& keys_) const {
-        return map.find(extractor(keys_, 0)) != map.end();
-    }
+    bool has_key(const key_vec& keys_) const
+    { return map.find(extractor(keys_, 0)) != map.end(); }
 
-    bool has_key(SEXP keys_) const {
-        return has_key(Rcpp::as<key_vec>(keys_));
-    }
+    bool has_key(SEXP keys_) const
+    { return has_key(Rcpp::as<key_vec>(keys_)); }
 
-    Rcpp::Vector<LGLSXP> has_keys(const key_vec& keys_) const {
+    Rcpp::Vector<LGLSXP> has_keys(const key_vec& keys_) const
+    {
         R_xlen_t i = 0, n = keys_.size();
         Rcpp::Vector<LGLSXP> res = Rcpp::no_init_vector(n);
         const_iterator last = map.end();
 
-        for ( ; i < n; i++) {
+        for (; i < n; i++) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             res[i] = (map.find(extractor(keys_, i)) != last) ?
                 true : false;
@@ -435,11 +479,11 @@ public:
         return res;
     }
 
-    Rcpp::Vector<LGLSXP> has_keys(SEXP keys_) const {
-        return has_keys(Rcpp::as<key_vec>(keys_));
-    }
+    Rcpp::Vector<LGLSXP> has_keys(SEXP keys_) const
+    { return has_keys(Rcpp::as<key_vec>(keys_)); }
 
-    value_vec data() const {
+    value_vec data() const
+    {
         if (values_cached_ && keys_cached_) {
             value_vec res(vvec);
             res.names() = kvec;
@@ -453,7 +497,7 @@ public:
 
         const_iterator first = map.begin(), last = map.end();
 
-        for ( ; first != last; ++first) {
+        for (; first != last; ++first) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             knames[i] = first->first;
             res[i] = first->second;
@@ -482,7 +526,8 @@ public:
         return res;
     }
 
-    value_vec data_n(int nx) const {
+    value_vec data_n(int nx) const
+    {
         if (nx < 0) nx = 0;
         if ((size_type)nx > map.size()) nx = map.size();
 
@@ -500,7 +545,7 @@ public:
 
         const_iterator first = map.begin(), last = map.end();
 
-        for ( ; first != last && n != nx; ++first, ++n) {
+        for (; first != last && n != nx; ++first, ++n) {
             HASHMAP_CHECK_INTERRUPT(i, 50000);
             knames[i] = first->first;
             res[i] = first->second;
@@ -529,7 +574,8 @@ public:
         return res;
     }
 
-    Rcpp::DataFrame data_frame() const {
+    Rcpp::DataFrame data_frame() const
+    {
         if (keys_cached_ && values_cached_) {
             return Rcpp::DataFrame::create(
                 Rcpp::Named("Keys") = kvec,
@@ -561,15 +607,19 @@ public:
         );
     }
 
-    value_vec na_value_vector(R_xlen_t sz) const {
+    value_vec na_value_vector(R_xlen_t sz) const
+    {
         value_vec res((int)sz, value_na());
         set_value_attr(res);
+
         return res;
     }
 
-    std::string key_class_name() const {
+    std::string key_class_name() const
+    {
         if (date_keys) return "Date";
         if (posix_keys.is) return "POSIXct";
+
         switch ((int)key_rtype) {
             case INTSXP: return "integer";
             case REALSXP: return "numeric";
@@ -578,12 +628,15 @@ public:
             case CPLXSXP: return "complex";
             default: return "";
         }
+
         return "";
     }
 
-    std::string value_class_name() const {
+    std::string value_class_name() const
+    {
         if (date_values) return "Date";
         if (posix_values.is) return "POSIXct";
+
         switch ((int)value_rtype) {
             case INTSXP: return "integer";
             case REALSXP: return "numeric";
@@ -592,11 +645,13 @@ public:
             case CPLXSXP: return "complex";
             default: return "";
         }
+
         return "";
     }
 
     template <typename KT, typename VT>
-    Rcpp::DataFrame left_outer_join(const HashTemplate<KT, VT>& other) const {
+    Rcpp::DataFrame left_outer_join(const HashTemplate<KT, VT>& other) const
+    {
         if (empty()) return empty_join_result(other);
 
         Rcpp::DataFrame res = Rcpp::DataFrame::create(
@@ -622,7 +677,8 @@ public:
         return res;
     }
 
-    Rcpp::DataFrame left_outer_join(const HashMap& other) const {
+    Rcpp::DataFrame left_outer_join(const HashMap& other) const
+    {
         if (empty()) return empty_join_result(other);
 
         Rcpp::DataFrame res = Rcpp::DataFrame::create(
@@ -649,7 +705,8 @@ public:
     }
 
     template <typename KT, typename VT>
-    Rcpp::DataFrame right_outer_join(const HashTemplate<KT, VT>& other) const {
+    Rcpp::DataFrame right_outer_join(const HashTemplate<KT, VT>& other) const
+    {
         if (other.empty()) return empty_join_result(other);
 
         Rcpp::DataFrame res = Rcpp::DataFrame::create(
@@ -677,7 +734,8 @@ public:
         return res;
     }
 
-    Rcpp::DataFrame right_outer_join(const HashMap& other) const {
+    Rcpp::DataFrame right_outer_join(const HashMap& other) const
+    {
         if (other.empty()) return empty_join_result(other);
 
         Rcpp::DataFrame res = Rcpp::DataFrame::create(
@@ -706,7 +764,8 @@ public:
     }
 
     template <typename KT, typename VT>
-    Rcpp::DataFrame inner_join(const HashTemplate<KT, VT>& other) const {
+    Rcpp::DataFrame inner_join(const HashTemplate<KT, VT>& other) const
+    {
         if (empty() || other.empty()) return empty_join_result(other);
 
         std::string lhs_kcn = key_class_name(),
@@ -756,7 +815,8 @@ public:
         );                                                      \
     }
 
-    Rcpp::DataFrame inner_join(const HashMap& other) const {
+    Rcpp::DataFrame inner_join(const HashMap& other) const
+    {
         if (empty() || other.empty()) return empty_join_result(other);
 
         std::string lhs_kcn = key_class_name(),
@@ -792,7 +852,8 @@ public:
 #undef CASE_LABEL
 
     template <typename KT, typename VT>
-    Rcpp::DataFrame full_outer_join(const HashTemplate<KT, VT>& other) const {
+    Rcpp::DataFrame full_outer_join(const HashTemplate<KT, VT>& other) const
+    {
         if (empty() && other.empty()) return empty_join_result(other);
         if (empty()) return other.left_outer_join(*this);
         if (other.empty()) return left_outer_join(other);
@@ -812,10 +873,10 @@ public:
         size_type i = 0, j = 0, usz = size() + other.size();
         key_vec ukeys(usz), xkeys = keys(), ykeys = other.keys();
 
-        for ( ; i < size(); i++) {
+        for (; i < size(); i++) {
             ukeys[i] = xkeys[i];
         }
-        for ( ; i < usz; i++, j++) {
+        for (; i < usz; i++, j++) {
             ukeys[i] = ykeys[j];
         }
 
@@ -830,7 +891,8 @@ public:
         );
     }
 
-    Rcpp::DataFrame full_outer_join(const HashMap& other) const {
+    Rcpp::DataFrame full_outer_join(const HashMap& other) const
+    {
         if (empty() && other.empty()) return empty_join_result(other);
         if (other.empty()) return left_outer_join(other);
 
@@ -858,10 +920,10 @@ public:
         size_type i = 0, j = 0, usz = size() + other.size();
         key_vec ukeys(usz), xkeys = keys(), ykeys = other.keys();
 
-        for ( ; i < size(); i++) {
+        for (; i < size(); i++) {
             ukeys[i] = xkeys[i];
         }
-        for ( ; i < usz; i++, j++) {
+        for (; i < usz; i++, j++) {
             ukeys[i] = ykeys[j];
         }
 

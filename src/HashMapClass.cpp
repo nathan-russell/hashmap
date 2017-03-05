@@ -25,45 +25,31 @@ namespace hashmap {
 
 template <typename T>
 variant_hash HashMap::clone_visitor::operator()(const T& t) const
-{
-    return variant_hash(t->clone());
-}
+{ return variant_hash(t->clone()); }
 
 template <typename T>
 std::size_t HashMap::size_visitor::operator()(const T& t) const
-{
-    return t->size();
-}
+{ return t->size(); }
 
 template <typename T>
 bool HashMap::empty_visitor::operator()(const T& t) const
-{
-    return t->empty();
-}
+{ return t->empty(); }
 
 template <typename T>
 bool HashMap::keys_cached_visitor::operator()(const T& t) const
-{
-    return t->keys_cached();
-}
+{ return t->keys_cached(); }
 
 template <typename T>
 bool HashMap::values_cached_visitor::operator()(const T& t) const
-{
-    return t->values_cached();
-}
+{ return t->values_cached(); }
 
 template <typename T>
 int HashMap::key_sexptype_visitor::operator()(const T& t) const
-{
-    return t->key_sexptype();
-}
+{ return t->key_sexptype(); }
 
 template <typename T>
 int HashMap::value_sexptype_visitor::operator()(const T& t) const
-{
-    return t->value_sexptype();
-}
+{ return t->value_sexptype(); }
 
 HashMap::key_vector_visitor::key_vector_visitor(int n_)
     : n(n_)
@@ -71,9 +57,7 @@ HashMap::key_vector_visitor::key_vector_visitor(int n_)
 
 template <typename T>
 SEXP HashMap::key_vector_visitor::operator()(const T& t) const
-{
-    return t->key_vector(n);
-}
+{ return t->key_vector(n); }
 
 HashMap::value_vector_visitor::value_vector_visitor(int n_)
     : n(n_)
@@ -81,9 +65,7 @@ HashMap::value_vector_visitor::value_vector_visitor(int n_)
 
 template <typename T>
 SEXP HashMap::value_vector_visitor::operator()(const T& t) const
-{
-    return t->value_vector(n);
-}
+{ return t->value_vector(n); }
 
 HashMap::na_value_vector_visitor::na_value_vector_visitor(int n_)
     : n(n_)
@@ -91,21 +73,15 @@ HashMap::na_value_vector_visitor::na_value_vector_visitor(int n_)
 
 template <typename T>
 SEXP HashMap::na_value_vector_visitor::operator()(const T& t) const
-{
-    return t->na_value_vector(n);
-}
+{ return t->na_value_vector(n); }
 
 template <typename T>
 void HashMap::clear_visitor::operator()(T& t)
-{
-    t->clear();
-}
+{ t->clear(); }
 
 template <typename T>
 std::size_t HashMap::bucket_count_visitor::operator()(const T& t) const
-{
-    return t->bucket_count();
-}
+{ return t->bucket_count(); }
 
 HashMap::rehash_visitor::rehash_visitor(std::size_t n_)
     : n(n_)
@@ -113,9 +89,7 @@ HashMap::rehash_visitor::rehash_visitor(std::size_t n_)
 
 template <typename T>
 void HashMap::rehash_visitor::operator()(T& t)
-{
-    t->rehash(n);
-}
+{ t->rehash(n); }
 
 HashMap::reserve_visitor::reserve_visitor(std::size_t n_)
     : n(n_)
@@ -123,9 +97,7 @@ HashMap::reserve_visitor::reserve_visitor(std::size_t n_)
 
 template <typename T>
 void HashMap::reserve_visitor::operator()(T& t)
-{
-    t->reserve(n);
-}
+{ t->reserve(n); }
 
 HashMap::hash_value_visitor::hash_value_visitor(SEXP keys_)
     : keys(keys_)
@@ -133,9 +105,7 @@ HashMap::hash_value_visitor::hash_value_visitor(SEXP keys_)
 
 template <typename T>
 SEXP HashMap::hash_value_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->hash_value(keys));
-}
+{ return Rcpp::wrap(t->hash_value(keys)); }
 
 HashMap::insert_visitor::insert_visitor(SEXP keys_, SEXP values_)
     : keys(keys_), values(values_)
@@ -143,15 +113,11 @@ HashMap::insert_visitor::insert_visitor(SEXP keys_, SEXP values_)
 
 template <typename T>
 void HashMap::insert_visitor::operator()(T& t)
-{
-    t->insert(keys, values);
-}
+{ t->insert(keys, values); }
 
 template <typename T>
 SEXP HashMap::keys_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->keys());
-}
+{ return Rcpp::wrap(t->keys()); }
 
 HashMap::keys_n_visitor::keys_n_visitor(int n_)
     : n(n_)
@@ -159,15 +125,11 @@ HashMap::keys_n_visitor::keys_n_visitor(int n_)
 
 template <typename T>
 SEXP HashMap::keys_n_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->keys_n(n));
-}
+{ return Rcpp::wrap(t->keys_n(n)); }
 
 template <typename T>
 SEXP HashMap::values_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->values());
-}
+{ return Rcpp::wrap(t->values()); }
 
 HashMap::values_n_visitor::values_n_visitor(int n_)
     : n(n_)
@@ -175,21 +137,15 @@ HashMap::values_n_visitor::values_n_visitor(int n_)
 
 template <typename T>
 SEXP HashMap::values_n_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->values_n(n));
-}
+{ return Rcpp::wrap(t->values_n(n)); }
 
 template <typename T>
 void HashMap::cache_keys_visitor::operator()(T& t)
-{
-    t->cache_keys();
-}
+{ t->cache_keys(); }
 
 template <typename T>
 void HashMap::cache_values_visitor::operator()(T& t)
-{
-    t->cache_values();
-}
+{ t->cache_values(); }
 
 HashMap::erase_visitor::erase_visitor(SEXP keys_)
     : keys(keys_)
@@ -197,9 +153,7 @@ HashMap::erase_visitor::erase_visitor(SEXP keys_)
 
 template <typename T>
 void HashMap::erase_visitor::operator()(T& t)
-{
-    t->erase(keys);
-}
+{ t->erase(keys); }
 
 HashMap::find_visitor::find_visitor(SEXP keys_)
     : keys(keys_)
@@ -207,9 +161,7 @@ HashMap::find_visitor::find_visitor(SEXP keys_)
 
 template <typename T>
 SEXP HashMap::find_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->find(keys));
-}
+{ return Rcpp::wrap(t->find(keys)); }
 
 HashMap::has_key_visitor::has_key_visitor(SEXP keys_)
     : keys(keys_)
@@ -217,9 +169,7 @@ HashMap::has_key_visitor::has_key_visitor(SEXP keys_)
 
 template <typename T>
 bool HashMap::has_key_visitor::operator()(const T& t) const
-{
-    return t->has_key(keys);
-}
+{ return t->has_key(keys); }
 
 HashMap::has_keys_visitor::has_keys_visitor(SEXP keys_)
     : keys(keys_)
@@ -227,15 +177,11 @@ HashMap::has_keys_visitor::has_keys_visitor(SEXP keys_)
 
 template <typename T>
 SEXP HashMap::has_keys_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->has_keys(keys));
-}
+{ return Rcpp::wrap(t->has_keys(keys)); }
 
 template <typename T>
 SEXP HashMap::data_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->data());
-}
+{ return Rcpp::wrap(t->data()); }
 
 HashMap::data_n_visitor::data_n_visitor(int n_)
     : n(n_)
@@ -243,27 +189,19 @@ HashMap::data_n_visitor::data_n_visitor(int n_)
 
 template <typename T>
 SEXP HashMap::data_n_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->data_n(n));
-}
+{ return Rcpp::wrap(t->data_n(n)); }
 
 template <typename T>
 SEXP HashMap::data_frame_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->data_frame());
-}
+{ return Rcpp::wrap(t->data_frame()); }
 
 template <typename T>
 std::string HashMap::key_class_name_visitor::operator()(const T& t) const
-{
-    return t->key_class_name();
-}
+{ return t->key_class_name(); }
 
 template <typename T>
 std::string HashMap::value_class_name_visitor::operator()(const T& t) const
-{
-    return t->value_class_name();
-}
+{ return t->value_class_name(); }
 
 HashMap::left_outer_join_visitor::left_outer_join_visitor(const HashMap& other_)
     : other(other_)
@@ -271,9 +209,7 @@ HashMap::left_outer_join_visitor::left_outer_join_visitor(const HashMap& other_)
 
 template <typename T>
 SEXP HashMap::left_outer_join_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->left_outer_join(other));
-}
+{ return Rcpp::wrap(t->left_outer_join(other)); }
 
 HashMap::right_outer_join_visitor::right_outer_join_visitor(const HashMap& other_)
     : other(other_)
@@ -281,9 +217,7 @@ HashMap::right_outer_join_visitor::right_outer_join_visitor(const HashMap& other
 
 template <typename T>
 SEXP HashMap::right_outer_join_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->right_outer_join(other));
-}
+{ return Rcpp::wrap(t->right_outer_join(other)); }
 
 HashMap::inner_join_visitor::inner_join_visitor(const HashMap& other_)
     : other(other_)
@@ -291,9 +225,7 @@ HashMap::inner_join_visitor::inner_join_visitor(const HashMap& other_)
 
 template <typename T>
 SEXP HashMap::inner_join_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->inner_join(other));
-}
+{ return Rcpp::wrap(t->inner_join(other)); }
 
 HashMap::full_outer_join_visitor::full_outer_join_visitor(const HashMap& other_)
     : other(other_)
@@ -301,9 +233,7 @@ HashMap::full_outer_join_visitor::full_outer_join_visitor(const HashMap& other_)
 
 template <typename T>
 SEXP HashMap::full_outer_join_visitor::operator()(const T& t) const
-{
-    return Rcpp::wrap(t->full_outer_join(other));
-}
+{ return Rcpp::wrap(t->full_outer_join(other)); }
 
 void HashMap::init(SEXP x, SEXP y)
 {
@@ -450,19 +380,13 @@ void HashMap::init(SEXP x, SEXP y)
 }
 
 HashMap::HashMap(SEXP x, SEXP y)
-{
-    init(x, y);
-}
+{ init(x, y); }
 
 HashMap::HashMap(const Rcpp::XPtr<HashMap>& ptr)
-{
-    init(Rcpp::clone(ptr->keys()), Rcpp::clone(ptr->values()));
-}
+{ init(Rcpp::clone(ptr->keys()), Rcpp::clone(ptr->values())); }
 
 HashMap HashMap::clone() const
-{
-    return HashMap(Rcpp::clone(keys()), Rcpp::clone(values()));
-}
+{ return HashMap(Rcpp::clone(keys()), Rcpp::clone(values())); }
 
 void HashMap::renew(SEXP x, SEXP y)
 {
@@ -471,34 +395,22 @@ void HashMap::renew(SEXP x, SEXP y)
 }
 
 int HashMap::size() const
-{
-    return boost::apply_visitor(size_visitor(), variant);
-}
+{ return boost::apply_visitor(size_visitor(), variant); }
 
 bool HashMap::empty() const
-{
-    return boost::apply_visitor(empty_visitor(), variant);
-}
+{ return boost::apply_visitor(empty_visitor(), variant); }
 
 bool HashMap::keys_cached() const
-{
-    return boost::apply_visitor(keys_cached_visitor(), variant);
-}
+{ return boost::apply_visitor(keys_cached_visitor(), variant); }
 
 bool HashMap::values_cached() const
-{
-    return boost::apply_visitor(values_cached_visitor(), variant);
-}
+{ return boost::apply_visitor(values_cached_visitor(), variant); }
 
 int HashMap::key_sexptype() const
-{
-    return boost::apply_visitor(key_sexptype_visitor(), variant);
-}
+{ return boost::apply_visitor(key_sexptype_visitor(), variant); }
 
 int HashMap::value_sexptype() const
-{
-    return boost::apply_visitor(value_sexptype_visitor(), variant);
-}
+{ return boost::apply_visitor(value_sexptype_visitor(), variant); }
 
 SEXP HashMap::key_vector(int n) const
 {
@@ -525,9 +437,7 @@ void HashMap::clear()
 }
 
 int HashMap::bucket_count() const
-{
-    return boost::apply_visitor(bucket_count_visitor(), variant);
-}
+{ return boost::apply_visitor(bucket_count_visitor(), variant); }
 
 void HashMap::rehash(int n)
 {
@@ -632,14 +542,10 @@ SEXP HashMap::data_frame() const
 }
 
 std::string HashMap::key_class_name() const
-{
-    return boost::apply_visitor(key_class_name_visitor(), variant);
-}
+{ return boost::apply_visitor(key_class_name_visitor(), variant); }
 
 std::string HashMap::value_class_name() const
-{
-    return boost::apply_visitor(value_class_name_visitor(), variant);
-}
+{ return boost::apply_visitor(value_class_name_visitor(), variant); }
 
 SEXP HashMap::left_outer_join(const HashMap& other) const
 {

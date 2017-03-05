@@ -23,30 +23,22 @@
 // [[Rcpp::export(".left_outer_join_impl")]]
 Rcpp::DataFrame left_outer_join_impl(const Rcpp::XPtr<hashmap::HashMap>& x,
                                      const Rcpp::XPtr<hashmap::HashMap>& y)
-{
-    return x->left_outer_join(y);
-}
+{ return x->left_outer_join(y); }
 
 //' @rdname internal-functions
 // [[Rcpp::export(".right_outer_join_impl")]]
 Rcpp::DataFrame right_outer_join_impl(const Rcpp::XPtr<hashmap::HashMap>& x,
                                       const Rcpp::XPtr<hashmap::HashMap>& y)
-{
-    return x->right_outer_join(y);
-}
+{ return x->right_outer_join(y); }
 
 //' @rdname internal-functions
 // [[Rcpp::export(".inner_join_impl")]]
 Rcpp::DataFrame inner_join_impl(const Rcpp::XPtr<hashmap::HashMap>& x,
                                 const Rcpp::XPtr<hashmap::HashMap>& y)
-{
-    return x->inner_join(y);
-}
+{ return x->inner_join(y); }
 
 //' @rdname internal-functions
 // [[Rcpp::export(".full_outer_join_impl")]]
 Rcpp::DataFrame full_outer_join_impl(const Rcpp::XPtr<hashmap::HashMap>& x,
                                      const Rcpp::XPtr<hashmap::HashMap>& y)
-{
-    return x->full_outer_join(y);
-}
+{ return x->full_outer_join(y); }

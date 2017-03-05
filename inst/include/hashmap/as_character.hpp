@@ -29,11 +29,12 @@ namespace hashmap {
 namespace detail {
 
 inline Rcpp::Vector<STRSXP>
-as_character_date(const Rcpp::Vector<INTSXP>& x) {
+as_character_date(const Rcpp::Vector<INTSXP>& x)
+{
     R_xlen_t i = 0, sz = x.size();
     Rcpp::Vector<STRSXP> res(sz);
 
-    for ( ; i < sz; i++) {
+    for (; i < sz; i++) {
         if (!Rcpp::traits::is_na<INTSXP>(x[i])) {
             res[i] = format_date((unsigned int)x[i]);
         } else {
@@ -45,11 +46,12 @@ as_character_date(const Rcpp::Vector<INTSXP>& x) {
 }
 
 inline Rcpp::Vector<STRSXP>
-as_character_date(const Rcpp::Vector<REALSXP>& x) {
+as_character_date(const Rcpp::Vector<REALSXP>& x)
+{
     R_xlen_t i = 0, sz = x.size();
     Rcpp::Vector<STRSXP> res(sz);
 
-    for ( ; i < sz; i++) {
+    for (; i < sz; i++) {
         if (!Rcpp::traits::is_na<REALSXP>(x[i])) {
             res[i] = format_date((unsigned int)x[i]);
         } else {
@@ -61,11 +63,12 @@ as_character_date(const Rcpp::Vector<REALSXP>& x) {
 }
 
 inline Rcpp::Vector<STRSXP>
-as_character_posix(const Rcpp::Vector<INTSXP>& x) {
+as_character_posix(const Rcpp::Vector<INTSXP>& x)
+{
     R_xlen_t i = 0, sz = x.size();
     Rcpp::Vector<STRSXP> res(sz);
 
-    for ( ; i < sz; i++) {
+    for (; i < sz; i++) {
         if (!Rcpp::traits::is_na<INTSXP>(x[i])) {
             res[i] = format_posix(x[i]);
         } else {
@@ -77,11 +80,12 @@ as_character_posix(const Rcpp::Vector<INTSXP>& x) {
 }
 
 inline Rcpp::Vector<STRSXP>
-as_character_posix(const Rcpp::Vector<REALSXP>& x) {
+as_character_posix(const Rcpp::Vector<REALSXP>& x)
+{
     R_xlen_t i = 0, sz = x.size();
     Rcpp::Vector<STRSXP> res(sz);
 
-    for ( ; i < sz; i++) {
+    for (; i < sz; i++) {
         if (!Rcpp::traits::is_na<REALSXP>(x[i])) {
             res[i] = format_posix((double)x[i]);
         } else {
@@ -93,11 +97,12 @@ as_character_posix(const Rcpp::Vector<REALSXP>& x) {
 }
 
 inline Rcpp::Vector<STRSXP>
-as_character_integer(const Rcpp::Vector<INTSXP>& x) {
+as_character_integer(const Rcpp::Vector<INTSXP>& x)
+{
     R_xlen_t i = 0, sz = x.size();
     Rcpp::Vector<STRSXP> res(sz);
 
-    for ( ; i < sz; i++) {
+    for (; i < sz; i++) {
         if (!Rcpp::traits::is_na<INTSXP>(x[i])) {
             res[i] = boost::lexical_cast<std::string>(x[i]);
         } else {
@@ -112,19 +117,18 @@ as_character_integer(const Rcpp::Vector<INTSXP>& x) {
 
 template <int RTYPE>
 inline Rcpp::Vector<STRSXP>
-as_character(const Rcpp::Vector<RTYPE>& x) {
-    return Rcpp::as< Rcpp::Vector<STRSXP> >(x);
-}
+as_character(const Rcpp::Vector<RTYPE>& x)
+{ return Rcpp::as< Rcpp::Vector<STRSXP> >(x); }
 
 template <>
 inline Rcpp::Vector<STRSXP>
-as_character<STRSXP>(const Rcpp::Vector<STRSXP>& x) {
-    return x;
-}
+as_character<STRSXP>(const Rcpp::Vector<STRSXP>& x)
+{ return x; }
 
 template <>
 inline Rcpp::Vector<STRSXP>
-as_character<INTSXP>(const Rcpp::Vector<INTSXP>& x) {
+as_character<INTSXP>(const Rcpp::Vector<INTSXP>& x)
+{
     if (Rf_inherits(x, "Date")) {
         return detail::as_character_date(x);
     }
@@ -136,7 +140,8 @@ as_character<INTSXP>(const Rcpp::Vector<INTSXP>& x) {
 
 template <>
 inline Rcpp::Vector<STRSXP>
-as_character<REALSXP>(const Rcpp::Vector<REALSXP>& x) {
+as_character<REALSXP>(const Rcpp::Vector<REALSXP>& x)
+{
     if (Rf_inherits(x, "Date")) {
         return detail::as_character_date(x);
     }

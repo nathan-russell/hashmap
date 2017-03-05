@@ -302,7 +302,8 @@ static const days_in_month days_in_months[] =
 #define DAYS_IN_YEARS_MAX_YEAR (days_in_years[DAYS_IN_YEARS_COUNT - 1].year)
 #define DAYS_IN_YEARS_MAX_ACCUM (days_in_years[DAYS_IN_YEARS_COUNT - 1].accum)
 
-static inline unsigned int get_year(unsigned int x) {
+static inline unsigned int get_year(unsigned int x)
+{
     unsigned int i = 0;
     unsigned int imax = DAYS_IN_YEARS_COUNT;
 
@@ -317,7 +318,7 @@ static inline unsigned int get_year(unsigned int x) {
 
     unsigned int accum = DAYS_IN_YEARS_MAX_ACCUM;
     unsigned int res = DAYS_IN_YEARS_MAX_YEAR + 1;
-    for ( ; ; ++res) {
+    for (;; ++res) {
         accum += year_days(res);
         if (x < accum) break;
     }
@@ -325,7 +326,8 @@ static inline unsigned int get_year(unsigned int x) {
     return res;
 }
 
-inline std::string format_date(unsigned int x) {
+inline std::string format_date(unsigned int x)
+{
     if (Rcpp::traits::is_na<INTSXP>(x)) return "NA";
 
     char buff[16];
@@ -338,7 +340,7 @@ inline std::string format_date(unsigned int x) {
 
         unsigned int i = 0;
         if (!isleap(y)) {
-            for ( ; i < 12; i++) {
+            for (; i < 12; i++) {
                 if (x < days_in_months[i].accum) {
                     m = i + 1;
                     d = (i > 0) ? x - days_in_months[i - 1].accum : x;
@@ -346,7 +348,7 @@ inline std::string format_date(unsigned int x) {
                 }
             }
         } else {
-            for ( ; i < 12; i++) {
+            for (; i < 12; i++) {
                 if (x < days_in_months[i].laccum) {
                     m = i + 1;
                     d = (i > 0) ? x - days_in_months[i - 1].laccum : x;
@@ -359,14 +361,14 @@ inline std::string format_date(unsigned int x) {
         unsigned int accum = DAYS_IN_YEARS_MAX_ACCUM;
         unsigned int tmpyear = DAYS_IN_YEARS_MAX_YEAR + 1;
 
-        for ( ; tmpyear < y; tmpyear++) {
+        for (; tmpyear < y; tmpyear++) {
             accum += year_days(tmpyear);
         }
         x -= accum;
 
         unsigned int i = 0;
         if (!isleap(y)) {
-            for ( ; i < 12; i++) {
+            for (; i < 12; i++) {
                 if (x < days_in_months[i].accum) {
                     m = i + 1;
                     d = (i > 0) ? x - days_in_months[i - 1].accum : x;
@@ -374,7 +376,7 @@ inline std::string format_date(unsigned int x) {
                 }
             }
         } else {
-            for ( ; i < 12; i++) {
+            for (; i < 12; i++) {
                 if (x < days_in_months[i].laccum) {
                     m = i + 1;
                     d = (i > 0) ? x - days_in_months[i - 1].laccum : x;
@@ -401,20 +403,19 @@ public:
         : vec(vec_)
     {}
 
-    R_xlen_t size() const { return vec.size(); }
+    R_xlen_t size() const
+    { return vec.size(); }
 
-    std::string operator[](R_xlen_t i) const {
-        return format_date(vec[i]);
-    }
+    std::string operator[](R_xlen_t i) const
+    { return format_date(vec[i]); }
 };
 
 } // impl
 
 template <bool NA, typename T>
 inline impl::FormatDate<NA, T>
-format_date(const Rcpp::VectorBase<REALSXP, NA, T>& x) {
-    return impl::FormatDate<NA, T>(x);
-}
+format_date(const Rcpp::VectorBase<REALSXP, NA, T>& x)
+{ return impl::FormatDate<NA, T>(x); }
 
 
 #undef isleap

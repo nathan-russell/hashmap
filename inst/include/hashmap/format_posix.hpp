@@ -245,11 +245,12 @@ static const tz_abbr_offset tz_abbr_offsets[] =
 
 #define TZ_ABBR_COUNT (sizeof(tz_abbr_offsets) / sizeof(tz_abbr_offset))
 
-static inline signed int get_abbr_offset(const char* str) {
+static inline signed int get_abbr_offset(const char* str)
+{
     unsigned int sz = std::strlen(str), i = 0;
     if (sz > TZ_ABBR_MAX_CHAR) return 0;
 
-    for ( ; i < TZ_ABBR_COUNT; i++) {
+    for (; i < TZ_ABBR_COUNT; i++) {
         unsigned int nj = tz_abbr_offsets[i].sz;
         if (sz != nj) continue;
         if (std::strcmp(tz_abbr_offsets[i].abbr, str) == 0) {
@@ -263,7 +264,8 @@ static inline signed int get_abbr_offset(const char* str) {
 #undef TZ_ABBR_MAX_CHAR
 #undef TZ_ABBR_COUNT
 
-inline std::string format_posix(double x) {
+inline std::string format_posix(double x)
+{
     if (Rcpp::traits::is_na<REALSXP>(x)) return "NA";
 
     std::time_t tx = x;
@@ -293,20 +295,19 @@ public:
         offset = get_abbr_offset(tz);
     }
 
-    R_xlen_t size() const { return vec.size(); }
+    R_xlen_t size() const
+    { return vec.size(); }
 
-    std::string operator[](R_xlen_t i) const {
-        return format_posix(vec[i] + offset);
-    }
+    std::string operator[](R_xlen_t i) const
+    { return format_posix(vec[i] + offset); }
 };
 
 } // impl
 
 template <bool NA, typename T>
 inline impl::FormatPosix<NA, T>
-format_posix(const Rcpp::VectorBase<REALSXP, NA, T>& x) {
-    return impl::FormatPosix<NA, T>(x);
-}
+format_posix(const Rcpp::VectorBase<REALSXP, NA, T>& x)
+{ return impl::FormatPosix<NA, T>(x); }
 
 } // hashmap
 
