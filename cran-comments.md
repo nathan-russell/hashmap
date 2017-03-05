@@ -1,3 +1,17 @@
+## Test environments 
+* rhub
+    * Platform:   Windows Server 2008 R2 SP1, R-devel, 32/64 bit
+        * OK
+        
+    * Platform:   Ubuntu Linux 16.04 LTS, R-release, GCC
+        * sub-directories of 1Mb or more: libs   7.2Mb
+        
+    * Platform:   Fedora Linux, R-devel, clang, gfortran
+        * sub-directories of 1Mb or more: libs   7.1Mb
+        
+    * Platform:   Debian Linux, R-devel, GCC ASAN/UBSAN
+        * OK
+
 ## Resubmission 
 This is a resubmission, where I have: 
 * Used the correct MIT LICENSE template 
