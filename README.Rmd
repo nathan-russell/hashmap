@@ -29,19 +29,25 @@ class. The typical workaround is to use `environment`s, taking advantage of
 the fact that these objects are, by default, internally hashed: 
 
 ```R
-EE <- new.env(hash = TRUE)  ## equivalent to new.env()
+EE <- new.env(hash = TRUE)  # equivalent to new.env()
 
 set.seed(123)
-invisible(sapply(LETTERS, function(x) EE[[x]] <- rnorm(1)))
+list2env(
+    setNames(
+        as.list(rnorm(26)), 
+        LETTERS
+    ),
+    envir = EE
+)
 
 EE[["A"]]
-#[1] -0.5604756
+# [1] -0.5604756
 
 EE[["D"]]
-#[1] 0.07050839
+# [1] 0.07050839
 
 EE[["Z"]]
-#[1] -1.686693
+# [1] -1.686693
 ```
 
 In many situations, this is a fine solution - lookups are reasonably 
@@ -52,15 +58,16 @@ is the inability to work with vector arguments:
 
 ```R
 EE[[c("A", "B")]]
-#Error in EE[[c("A", "B")]] : 
-#  wrong arguments for subsetting an environment
+# Error in EE[[c("A", "B")]] : 
+#   wrong arguments for subsetting an environment
 
 EE[c("A", "B")]
-#Error in EE[c("A", "B")] : 
-#  object of type 'environment' is not subsettable
+# Error in EE[c("A", "B")] : 
+#   object of type 'environment' is not subsettable
 ```
-This is rather unfortunate considering R's overwhelming tendency 
-towards vectorized operations. 
+
+This is unfortunate, and somewhat surprising, considering most 
+operations in R have vectorized semantics. 
 
 ------------
 
@@ -81,7 +88,7 @@ set.seed(123)
 ##       [...] => [...] 
 
 HH[[c("A", "B")]]
-#[1] -0.5604756 -0.2301775
+# [1] -0.5604756 -0.2301775
 ```
 
 It is important to note that unlike the `environment`-based solution, 
@@ -140,18 +147,18 @@ truncated to the length of its counterpart, and a warning is issued:
     ##         [c] => [3]      
     ##         [b] => [2]      
     ##         [a] => [1]      
-    #Warning message:
-    #In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
-    #  length(keys) != length(values)!
+    # Warning message:
+    # In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
+    #   length(keys) != length(values)!
       
     hashmap(letters[1:3], 1:5)
     ## (character) => (integer)
     ##         [c] => [3]      
     ##         [b] => [2]      
     ##         [a] => [1]      
-    #Warning message:
-    #In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
-    #  length(keys) != length(values)!
+    # Warning message:
+    # In new_CppObject_xp(fields$.module, fields$.pointer, ...) :
+    #   length(keys) != length(values)!
     ```
     
 + Value lookup can be performed by passing a vector of lookup keys to 
@@ -159,23 +166,23 @@ either of `[[` or `$find`:
 
     ```R
     H[["a"]]
-    #[1] -0.5604756
+    # [1] -0.5604756
     
     H$find("b")
-    #[1] -0.2301775
+    # [1] -0.2301775
     
     H[[c("a", "c")]]
-    #[1] -0.5604756  1.5587083
+    # [1] -0.5604756  1.5587083
     
     H$find(c("b", "d"))
-    #[1] -0.23017749  0.07050839
+    # [1] -0.23017749  0.07050839
     ```
 
 + For non-existant lookup keys, `NA` is returned: 
 
     ```R
     H[[c("a", "A", "b")]]
-    #[1] -0.5604756         NA -0.2301775
+    # [1] -0.5604756         NA -0.2301775
     ```
     
 + Use `$has_key` to check for the existance of individual keys, or `$has_keys` 
@@ -183,13 +190,13 @@ for a vector of keys:
 
     ```R
     H$has_key("a")
-    #[1] TRUE
+    # [1] TRUE
     
     H$has_key("A")
-    #[1] FALSE
+    # [1] FALSE
     
     H$has_keys(c("a", "A", "b", "B"))
-    #[1]  TRUE FALSE  TRUE FALSE
+    # [1]  TRUE FALSE  TRUE FALSE
     ```
 
 + Modification of key-value pairs is done using either of `[[<-` or 
@@ -198,15 +205,15 @@ inserted. For existing keys, the previous value will be overwritten:
 
     ```R
     H[[c("a", "x")]]
-    #[1] -0.5604756         NA
+    # [1] -0.5604756         NA
     
     H[[c("a", "x")]] <- c(1.5, 26.5)
     H[[c("a", "x")]]
-    #[1]  1.5 26.5
+    # [1]  1.5 26.5
     
     H$insert(c("a", "y", "z"), c(100, 200, 300))
     H[[c("a", "y", "z")]]
-    #[1] 100 200 300
+    # [1] 100 200 300
     ``` 
 
 + To remove elements from the hash table, pass a vector of keys to `$erase`, 
@@ -214,12 +221,12 @@ which will delete entries for matched elements, and do nothing otherwise:
 
     ```R
     H$has_keys(c("y", "Y", "z", "Z"))
-    #[1]  TRUE FALSE  TRUE FALSE
+    # [1]  TRUE FALSE  TRUE FALSE
     
     H$erase(c("y", "Y", "z", "Z"))
     
     H$has_keys(c("y", "Y", "z", "Z"))
-    #[1] FALSE FALSE FALSE FALSE
+    # [1] FALSE FALSE FALSE FALSE
     ```
 
 + Use `$size` to check the number of key-value pairs, `$empty` to check 
@@ -227,18 +234,18 @@ if the hash table is empty, and `$clear` to delete all existing entries:
 
     ```R
     H$size()
-    #[1] 11
+    # [1] 11
     
     H$empty()
-    #[1] FALSE
+    # [1] FALSE
     
     H$clear()
     
     H$empty()
-    #[1] TRUE
+    # [1] TRUE
     
     H$size()
-    #[1] 0
+    # [1] 0
     
     H
     ## [empty Hashmap]
@@ -251,14 +258,14 @@ if the hash table is empty, and `$clear` to delete all existing entries:
     H[[c("A", "B", "C")]] <- 1:3
     
     H$keys()
-    #[1] "C" "B" "A"
+    # [1] "C" "B" "A"
     
     H$values()
-    #[1] 3 2 1
+    # [1] 3 2 1
     
     H$data()
-    #C B A 
-    #3 2 1 
+    # C B A 
+    # 3 2 1 
     ```
     
 + By default, only the first 6 key-value pairs of a `Hashmap` are printed, 
@@ -267,7 +274,7 @@ displayed. This can be adjusted via `options()`:
 
     ```R
     getOption("hashmap.max.print")
-    #[1] 6
+    # [1] 6
     
     H
     ## (character) => (numeric)  
@@ -306,55 +313,6 @@ displayed. This can be adjusted via `options()`:
 
 ----------
 
-#### Implementation Overview  
-
-The key to `hashmap`'s ability to perform fast lookups and inserts is the fact that 
-virtually everything is handled on the C++ level. This is achieved through 
-use of the `RCPP_MODULE` macro which generates an S4 wrapper class (`Hashmap`) 
-storing an external pointer to the underlying 
-[C++ class](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashMap.hpp). 
-Consequently, once the initial price of constructing a `Hashmap` has been paid, 
-subsequent lookups and inserts can be performed *very* quickly since the C++ 
-object is persisted between function calls. 
-
-Generally speaking, exposing C++ classes to R means dealing with one or both of 
-the following obstacles: 
-
-1. R, unlike C++, does not have a concept of template classes, which means that 
-one cannot simply expose, e.g. any of the STL containers, and expect R 
-to "know what to do". The naive solution to this problem is for the developer to 
-expose several different instances of said template class. This is far from ideal 
-as it involves significant code duplication on the backend (especially for associative 
-containers, which usually have at least two template parameters), and one class 
-per template instance on the frontend (in R).
-
-2. Although nearly all major C++ compiler vendors have been providing 
-feature-complete implementations of the C++11 standard for several years, R 
-itself is implemented under the assumption of a C++98-compliant toolchain, 
-and as a result packages which depend on more modern C++ features are not 
-exactly encouraged. Furthermore, compiling source code on Windows machines 
-requires the [Rtools extension](https://cran.r-project.org/bin/windows/Rtools/), 
-which is not included with standard distributions of R. As the most current 
-version of Rtools uses gcc 4.6.x (via MinGW), compiling C++11-based source 
-code is not an option for many Windows users. The next 
-[iteration of Rtools](https://github.com/rwinlib/r-base#readme) should be 
-available sometime in the near future, so hopefully this will be less of 
-an issue looking ahead.
-
-To overcome both of the issues outlined above, `hashmap` relies on features 
-provided by the [Boost C++ Libraries](http://www.boost.org/), which are 
-conveniently made available through the 
-[R package BH](https://github.com/eddelbuettel/bh). To address the second 
-obstacle, `hashmap` employs a templated wrapper class 
-[HashTemplate](https://github.com/nathan-russell/hashmap/blob/master/inst/include/hashmap/HashTemplate.hpp), leveraging the functionality of the C++98-compliant 
-`boost::unordered_map` and `boost::hash` (in lieu of C++11's 
-`std::unordered_map` and `std::hash`). Subsequently, the first problem can 
-then be solved by encapsulating instances of `HashTemplate` within a 
-`boost::variant` and making extensive use of `boost::static_visitor` and 
-`boost::apply_visitor`. 
-
------------ 
-
 #### Benchmark
 
 The following is a simple test comparing the performance of an 
@@ -391,7 +349,7 @@ E <- env_hash(Keys, Values)
 H <- hashmap(Keys, Values)
 
 all.equal(env_find(Lookup, E), H[[Lookup]])
-#[1] TRUE
+# [1] TRUE
 
 microbenchmark::microbenchmark(
     "Hash" = H[[Lookup]],
@@ -421,7 +379,7 @@ The benchmark was conducted on a laptop running Ubuntu
 14.04, with the following specs, 
 
 ```shell
-nathan@nathan-laptop:~$ lscpu && printf "\n\n" && free -h
+$ lscpu && printf "\n\n" && free -h
 Architecture:          x86_64
 CPU op-mode(s):        32-bit, 64-bit
 Byte Order:            Little Endian
@@ -485,14 +443,13 @@ loaded via a namespace (and not attached):
 
 ### Installation
 
-The latest release version of `hashmap` can be installed normally 
-from CRAN: 
+The stable release of `hashmap` can be installed from CRAN: 
 
 ```r
 install.packages("hashmap")
 ```
 
-Bleeding-edge versions can be installed from GitHub with `devtools`: 
+The current development version can be installed from GitHub with `devtools`: 
 
 ```r
 if (!"devtools" %in% installed.packages()[,1]) {
