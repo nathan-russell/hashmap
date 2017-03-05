@@ -20,6 +20,13 @@
     * Windows 7, R-devel, 32/64 bit
         * OK
         
+* win-builder
+    * R-devel
+        * OK
+        
+    * R-release
+        * 1 NOTE
+        
 ----------
 
 ## R CMD check details
@@ -60,6 +67,19 @@ File 'LICENSE':
   YEAR: 2017
   COPYRIGHT HOLDER: Nathan Russell
       
+     
+* win-builder
+
+checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Nathan Russell <russell.nr2012@gmail.com>'
+
+License components with restrictions and base license permitting such:
+  MIT + file LICENSE
+File 'LICENSE':
+  YEAR: 2017
+  COPYRIGHT HOLDER: Nathan Russell
+
+----------
      
 Re: License notes
 
