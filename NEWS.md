@@ -9,6 +9,8 @@
 
 * Added `clone` function for creating deep copies. This is also reflected in 
   the C++ API via `HashMap::clone`. 
+  
+* Added S3 `merge` method
 
 ## Improvements
 
