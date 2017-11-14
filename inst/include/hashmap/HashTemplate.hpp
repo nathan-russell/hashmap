@@ -236,7 +236,7 @@ public:
     { return key_vec(n); }
 
     value_vec value_vector(int n) const
-    { return value_vector(n); }
+    { return value_vec(n); }
 
     void clear()
     {
