@@ -26,6 +26,10 @@
 #include <boost/functional/hash.hpp>
 #include "HashMapClass.h"
 
+#if !defined(HASHMAP_NO_SPP) && (!defined(__sun) || !defined(__SVR4))
+#include "sparsepp/spp.h"
+#endif
+
 namespace hashmap {
 
 template <int RTYPE>
@@ -45,7 +49,13 @@ class HashTemplate {
 public:
     typedef KeyType key_t;
     typedef ValueType value_t;
+
+
+#if defined(HASHMAP_NO_SPP) || (defined(__sun) && defined(__SVR4))  // solaris
     typedef boost::unordered_map<key_t, value_t> map_t;
+#else
+    typedef spp::sparse_hash_map<key_t, value_t> map_t;
+#endif
 
     enum { key_rtype = traits::sexp_traits<key_t>::rtype };
     enum { value_rtype = traits::sexp_traits<value_t>::rtype };
