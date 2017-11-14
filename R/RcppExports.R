@@ -22,21 +22,21 @@ NULL
 
 #' @rdname internal-functions
 .left_outer_join_impl <- function(x, y) {
-    .Call('hashmap_left_outer_join_impl', PACKAGE = 'hashmap', x, y)
+    .Call(`_hashmap_left_outer_join_impl`, x, y)
 }
 
 #' @rdname internal-functions
 .right_outer_join_impl <- function(x, y) {
-    .Call('hashmap_right_outer_join_impl', PACKAGE = 'hashmap', x, y)
+    .Call(`_hashmap_right_outer_join_impl`, x, y)
 }
 
 #' @rdname internal-functions
 .inner_join_impl <- function(x, y) {
-    .Call('hashmap_inner_join_impl', PACKAGE = 'hashmap', x, y)
+    .Call(`_hashmap_inner_join_impl`, x, y)
 }
 
 #' @rdname internal-functions
 .full_outer_join_impl <- function(x, y) {
-    .Call('hashmap_full_outer_join_impl', PACKAGE = 'hashmap', x, y)
+    .Call(`_hashmap_full_outer_join_impl`, x, y)
 }
 
