@@ -51,4 +51,3 @@ load_hashmap(tf)
 \seealso{
 \code{\link{load_hashmap}}, \code{\link{saveRDS}}
 }
-

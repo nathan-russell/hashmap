@@ -10,7 +10,7 @@
 #'
 #' @details A \code{Hashmap} object (\code{H}) resulting from a
 #'      call to \code{hashmap(keys, values)} provides the following
-#'      methods accessable via \code{$method_name}:
+#'      methods accessible via \code{$method_name}:
 #'
 #' \itemize{
 #'

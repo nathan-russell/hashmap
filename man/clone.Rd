@@ -40,4 +40,3 @@ x[["c"]] == 888
 \seealso{
 \code{\link{hashmap}}
 }
-

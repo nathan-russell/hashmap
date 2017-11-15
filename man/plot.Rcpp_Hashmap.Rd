@@ -28,4 +28,3 @@ plot(x, type = 'p', pch = 20, col = 'red')
 y <- hashmap(Sys.Date() + 1:20, rnorm(20))
 plot(y, type = 'h', col = 'blue', lwd = 3)
 }
-

@@ -85,4 +85,3 @@ microbenchmark::microbenchmark(
 \code{\link{Hashmap-class}} for a more detailed
      discussion of available methods
 }
-

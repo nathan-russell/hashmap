@@ -43,4 +43,3 @@ all.equal(
 \seealso{
 \code{\link{save_hashmap}}
 }
-
