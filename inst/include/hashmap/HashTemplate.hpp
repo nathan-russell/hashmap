@@ -2,7 +2,7 @@
 //
 // HashTemplate.hpp
 //
-// Copyright (C) 2016 Nathan Russell
+// Copyright (C) 2016 - 2017 Nathan Russell
 //
 // This file is part of hashmap.
 //

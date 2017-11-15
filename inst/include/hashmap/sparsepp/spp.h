@@ -1259,7 +1259,7 @@ public:
         assert(_group == 0);
         if (_group) {
             // exit(1);
-            throw std::bad_alloc();
+            Rf_warning("nonzero '_group' in ~sparsegroup()\n");
         }
     }
 
@@ -1710,7 +1710,7 @@ private:
             // fprintf(stderr, "realloc_or_die is only supported for "
             //         "spp::spp_allocator\n");
             Rf_warning("realloc_or_die is only supported for "
-                    "spp::spp_allocator\n");
+                       "spp::spp_allocator\n");
             // exit(1);
             throw std::bad_alloc();
             return NULL;

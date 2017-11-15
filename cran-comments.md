@@ -1,31 +1,43 @@
+## Release summary
+
+This is a minor update which replaces the default hash table used internally 
+on non-Solaris platforms in order to improve performance and reduce memory 
+usage. 
+
 ## Test environments 
 
 * rhub
-    * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
-        * OK
-        
     * Ubuntu Linux 16.04 LTS, R-release, GCC
-        * 2 NOTEs
+        * 1 NOTE
         
-    * Fedora Linux, R-devel, clang, gfortran
-        * 2 NOTEs
+    * Ubuntu Linux 16.04 LTS, R-devel, GCC
+        * 1 NOTE
+        
+    * Debian Linux, R-devel, GCC
+        * 1 NOTE
+        
+    * Debian Linux, R-patched, GCC
+        * 1 NOTE
         
     * Debian Linux, R-devel, GCC ASAN/UBSAN
         * OK
         
+    * Windows Server 2008 R2 SP1, R-patched, 32/64 bit
+        * OK
+        
 * local
-    * Debian Linux, R-devel
-        * OK
-    
-    * Windows 7, R-devel, 32/64 bit
-        * OK
+    * Fedora Linux, R-release, clang
+        * 1 NOTE
         
 * win-builder
     * R-devel
-        * OK
+        * 
         
     * R-release
-        * 1 NOTE
+        * 
+        
+    * R-oldrelease
+        * 
         
 ----------
 
@@ -97,7 +109,7 @@ about this.
 
 ----------
 
-## Downstream dependencies
+## Reverse dependencies
 
 0 errors | 0 warnings | 0 notes
 
