@@ -1,30 +1,42 @@
+## Release summary
+
+This is a minor update which replaces the default hash table used internally 
+on non-Solaris platforms in order to improve performance and reduce memory 
+usage. 
+
 ## Test environments 
 
 * rhub
-    * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
-        * OK
-        
     * Ubuntu Linux 16.04 LTS, R-release, GCC
-        * 2 NOTEs
+        * 1 NOTE
         
-    * Fedora Linux, R-devel, clang, gfortran
-        * 2 NOTEs
+    * Ubuntu Linux 16.04 LTS, R-devel, GCC
+        * 1 NOTE
+        
+    * Debian Linux, R-devel, GCC
+        * 1 NOTE
+        
+    * Debian Linux, R-patched, GCC
+        * 1 NOTE
         
     * Debian Linux, R-devel, GCC ASAN/UBSAN
         * OK
         
+    * Windows Server 2008 R2 SP1, R-patched, 32/64 bit
+        * OK
+        
 * local
-    * Debian Linux, R-devel
-        * OK
-    
-    * Windows 7, R-devel, 32/64 bit
-        * OK
+    * Fedora Linux, R-release, clang
+        * 1 NOTE
         
 * win-builder
     * R-devel
         * OK
         
     * R-release
+        * OK
+        
+    * R-oldrelease
         * 1 NOTE
         
 ----------
@@ -33,14 +45,12 @@
 
 0 ERRORs | 0 WARNINGs | 2 NOTEs
 
-
-* Ubuntu Linux 16.04 LTS, R-release, GCC
+* (All Linux platforms)
 
 checking installed package size ... NOTE
-    installed size is  7.4Mb
-    sub-directories of 1Mb or more:
-        libs   7.2Mb
-
+  
+* win-builder R-oldrelease
+ 
 checking CRAN incoming feasibility ... NOTE
 Maintainer: ‘Nathan Russell <russell.nr2012@gmail.com>’
   
@@ -50,44 +60,13 @@ File 'LICENSE':
   YEAR: 2017
   COPYRIGHT HOLDER: Nathan Russell
   
-    
-* Fedora Linux, R-devel, clang, gfortran
-    
-checking installed package size ... NOTE
-    installed size is  7.4Mb
-    sub-directories of 1Mb or more:
-        libs   7.1Mb
-
-checking CRAN incoming feasibility ... NOTE
-Maintainer: ‘Nathan Russell <russell.nr2012@gmail.com>’
-  
-License components with restrictions and base license permitting such:
-  MIT + file LICENSE
-File 'LICENSE':
-  YEAR: 2017
-  COPYRIGHT HOLDER: Nathan Russell
-      
-     
-* win-builder
-
-checking CRAN incoming feasibility ... NOTE
-Maintainer: 'Nathan Russell <russell.nr2012@gmail.com>'
-
-License components with restrictions and base license permitting such:
-  MIT + file LICENSE
-File 'LICENSE':
-  YEAR: 2017
-  COPYRIGHT HOLDER: Nathan Russell
-
 ----------
      
 Re: License notes
 
-I'm not sure what this means. This note does not currently show up on CRAN, 
-and the only change I've made to the LICENSE file is updating the year from 
-2016 to 2017. I was not able to reproduce this locally on Debian using 
-R CMD check --as-cran, even with _R_CHECK_LICENSE=TRUE.
-
+This note showed up for my previous release on only win-builder R-release, 
+and now shows up on only win-builder R-oldrelease, so I'm assuming this is a 
+quirk specific to R 3.3.
 
 Re: libs sizes
 
@@ -97,7 +76,6 @@ about this.
 
 ----------
 
-## Downstream dependencies
+## Reverse dependencies
 
 0 errors | 0 warnings | 0 notes
-

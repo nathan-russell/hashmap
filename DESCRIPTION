@@ -1,17 +1,14 @@
 Package: hashmap
 Type: Package
 Title: The Faster Hash Map
-Version: 0.2.0
-Date: 2017-03-05
+Version: 0.2.1
+Date: 2017-11-15
 Authors@R: person("Nathan", "Russell", email = "russell.nr2012@gmail.com",
     role = c("aut", "cre"))
 URL: https://github.com/nathan-russell/hashmap
 BugReports: https://github.com/nathan-russell/hashmap/issues
 Description: Provides a hash table class for fast
     key-value storage of atomic vector types.
-    Internally, 'hashmap' makes extensive use of 'Rcpp', 'boost::variant',
-    and 'boost::unordered_map' to achieve high performance, type-safety,
-    and versatility, while maintaining compliance with the C++98 standard.
 License: MIT + file LICENSE
 LazyData: Yes
 ByteCompile: TRUE

@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // left_outer_join_impl
 Rcpp::DataFrame left_outer_join_impl(const Rcpp::XPtr<hashmap::HashMap>& x, const Rcpp::XPtr<hashmap::HashMap>& y);
-RcppExport SEXP hashmap_left_outer_join_impl(SEXP xSEXP, SEXP ySEXP) {
+RcppExport SEXP _hashmap_left_outer_join_impl(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -20,7 +20,7 @@ END_RCPP
 }
 // right_outer_join_impl
 Rcpp::DataFrame right_outer_join_impl(const Rcpp::XPtr<hashmap::HashMap>& x, const Rcpp::XPtr<hashmap::HashMap>& y);
-RcppExport SEXP hashmap_right_outer_join_impl(SEXP xSEXP, SEXP ySEXP) {
+RcppExport SEXP _hashmap_right_outer_join_impl(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -32,7 +32,7 @@ END_RCPP
 }
 // inner_join_impl
 Rcpp::DataFrame inner_join_impl(const Rcpp::XPtr<hashmap::HashMap>& x, const Rcpp::XPtr<hashmap::HashMap>& y);
-RcppExport SEXP hashmap_inner_join_impl(SEXP xSEXP, SEXP ySEXP) {
+RcppExport SEXP _hashmap_inner_join_impl(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -44,7 +44,7 @@ END_RCPP
 }
 // full_outer_join_impl
 Rcpp::DataFrame full_outer_join_impl(const Rcpp::XPtr<hashmap::HashMap>& x, const Rcpp::XPtr<hashmap::HashMap>& y);
-RcppExport SEXP hashmap_full_outer_join_impl(SEXP xSEXP, SEXP ySEXP) {
+RcppExport SEXP _hashmap_full_outer_join_impl(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;

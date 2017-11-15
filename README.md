@@ -317,9 +317,9 @@ microbenchmark::microbenchmark(
 
 And finally, a comparison of key-lookups for vectors of various sizes, plotted below on the linear and logarithmic scales, where data points represent median evaluation time of 200 runs for the given expression:
 
-![](assets/linear-plot.png)
+![](tools/linear-plot.png)
 
-![](assets/log-plot.png)
+![](tools/log-plot.png)
 
 ------------------------------------------------------------------------
 
