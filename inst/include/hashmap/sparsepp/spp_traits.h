@@ -33,7 +33,7 @@ template<typename T> struct remove_const<T const> { typedef T type; };
 template<typename T> struct remove_volatile { typedef T type; };
 template<typename T> struct remove_volatile<T volatile> { typedef T type; };
 
-template<typename T> struct remove_cv 
+template<typename T> struct remove_cv
 {
     typedef typename remove_const<typename remove_volatile<T>::type>::type type;
 };
@@ -51,9 +51,11 @@ template<> struct is_integral<int>            : true_type { };
 template<> struct is_integral<unsigned int>   : true_type { };
 template<> struct is_integral<long>           : true_type { };
 template<> struct is_integral<unsigned long>  : true_type { };
+#ifndef NO_SPP_LONG_LONG
 #ifdef SPP_HAS_LONG_LONG
     template<> struct is_integral<long long>  : true_type { };
     template<> struct is_integral<unsigned long long> : true_type { };
+#endif
 #endif
 template <class T> struct is_integral<const T>          : is_integral<T> { };
 template <class T> struct is_integral<volatile T>       : is_integral<T> { };
@@ -112,7 +114,7 @@ struct if_
 };
 
 template<typename A, typename B>
-struct if_<false, A, B> 
+struct if_<false, A, B>
 {
     typedef B type;
 };
