@@ -1,8 +1,8 @@
 Package: hashmap
 Type: Package
 Title: The Faster Hash Map
-Version: 0.2.1
-Date: 2017-11-15
+Version: 0.2.2
+Date: 2017-11-16
 Authors@R: person("Nathan", "Russell", email = "russell.nr2012@gmail.com",
     role = c("aut", "cre"))
 URL: https://github.com/nathan-russell/hashmap

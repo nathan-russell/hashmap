@@ -1,3 +1,11 @@
+## Bugfix note 
+
+This release (0.2.2, 2017-11-16) contains a fix for an issue in the previous 
+release (0.2.1, 2017-11-15) which was causing a build error on macOS and 
+Fedora + clang, due to the inclusion of a C++ TR1 header file. The problematic 
+'#include' statements have been removed, and the revised version was able to be 
+installed successfully on macOS, tested via rhub. 
+
 ## Release summary
 
 This is a minor update which replaces the default hash table used internally 
@@ -23,6 +31,9 @@ usage.
         * OK
         
     * Windows Server 2008 R2 SP1, R-patched, 32/64 bit
+        * OK
+        
+    * macOS 10.11 El Capitan, R-release
         * OK
         
 * local
