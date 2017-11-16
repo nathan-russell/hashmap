@@ -1,3 +1,9 @@
+# hashmap 0.2.2
+
+## Bug Fixes
+
+* Fixed a bug that was causing a build error on macOS.
+
 # hashmap 0.2.1
 
 ## Improvements 
