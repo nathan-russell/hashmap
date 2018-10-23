@@ -30,7 +30,7 @@ EE[["Z"]]
 # [1] -1.686693
 ```
 
-In many situations, this is a fine solution - lookups are reasonably fast, and `environment`s are highly flexible, allowing one to store virtually any type of R object (functions, lists, other environments, etc.). However, one of the major downsides to using `envinronment`s as hash tables is the inability to work with vector arguments:
+In many situations, this is a fine solution - lookups are reasonably fast, and `environment`s are highly flexible, allowing one to store virtually any type of R object (functions, lists, other environments, etc.). However, one of the major downsides to using `environment`s as hash tables is the inability to work with vector arguments:
 
 ``` r
 EE[[c("A", "B")]]
