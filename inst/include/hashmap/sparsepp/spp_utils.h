@@ -81,13 +81,13 @@
     #endif
 #elif defined __clang__
     #if __has_feature(cxx_noexcept)  // what to use here?
-        #include <functional>
-        #define SPP_HASH_CLASS  std::hash
+       #include <functional>
+       #define SPP_HASH_CLASS  std::hash
     #else
        // #include <tr1/unordered_map>
        // #define SPP_HASH_CLASS std::tr1::hash
-        #include <boost/functional/hash.hpp>
-        #define SPP_HASH_CLASS boost::hash
+       #include <boost/functional/hash.hpp>
+       #define SPP_HASH_CLASS boost::hash
     #endif
 
     #if !__has_feature(cxx_noexcept)
@@ -102,8 +102,8 @@
             #define SPP_NO_CXX11_NOEXCEPT
         #endif
     #else
-       // #include <tr1/unordered_map>
-       // #define SPP_HASH_CLASS std::tr1::hash
+        // #include <tr1/unordered_map>
+        // #define SPP_HASH_CLASS std::tr1::hash
         #include <boost/functional/hash.hpp>
         #define SPP_HASH_CLASS boost::hash
         #define SPP_NO_CXX11_NOEXCEPT
@@ -187,96 +187,107 @@ inline size_t spp_mix_32(uint32_t a)
     return static_cast<size_t>(a);
 }
 
-// Maybe we should do a more thorough scrambling as described in
+// More thorough scrambling as described in
 // https://gist.github.com/badboy/6267743
-// -------------------------------------------------------------
+// ----------------------------------------
 inline size_t spp_mix_64(uint64_t a)
 {
-    a = a ^ (a >> 4);
-    a = (a ^ 0xdeadbeef) + (a << 5);
-    a = a ^ (a >> 11);
-    return (size_t)a;
+    a = (~a) + (a << 21); // a = (a << 21) - a - 1;
+    a = a ^ (a >> 24);
+    a = (a + (a << 3)) + (a << 8); // a * 265
+    a = a ^ (a >> 14);
+    a = (a + (a << 2)) + (a << 4); // a * 21
+    a = a ^ (a >> 28);
+    a = a + (a << 31);
+    return static_cast<size_t>(a);
 }
 
+template<class ArgumentType, class ResultType>
+struct spp_unary_function
+{
+    typedef ArgumentType argument_type;
+    typedef ResultType result_type;
+};
+
 template <>
-struct spp_hash<bool> : public std::unary_function<bool, size_t>
+struct spp_hash<bool> : public spp_unary_function<bool, size_t>
 {
     SPP_INLINE size_t operator()(bool __v) const SPP_NOEXCEPT
     { return static_cast<size_t>(__v); }
 };
 
 template <>
-struct spp_hash<char> : public std::unary_function<char, size_t>
+struct spp_hash<char> : public spp_unary_function<char, size_t>
 {
     SPP_INLINE size_t operator()(char __v) const SPP_NOEXCEPT
     { return static_cast<size_t>(__v); }
 };
 
 template <>
-struct spp_hash<signed char> : public std::unary_function<signed char, size_t>
+struct spp_hash<signed char> : public spp_unary_function<signed char, size_t>
 {
     SPP_INLINE size_t operator()(signed char __v) const SPP_NOEXCEPT
     { return static_cast<size_t>(__v); }
 };
 
 template <>
-struct spp_hash<unsigned char> : public std::unary_function<unsigned char, size_t>
+struct spp_hash<unsigned char> : public spp_unary_function<unsigned char, size_t>
 {
     SPP_INLINE size_t operator()(unsigned char __v) const SPP_NOEXCEPT
     { return static_cast<size_t>(__v); }
 };
 
 template <>
-struct spp_hash<wchar_t> : public std::unary_function<wchar_t, size_t>
+struct spp_hash<wchar_t> : public spp_unary_function<wchar_t, size_t>
 {
     SPP_INLINE size_t operator()(wchar_t __v) const SPP_NOEXCEPT
     { return static_cast<size_t>(__v); }
 };
 
 template <>
-struct spp_hash<int16_t> : public std::unary_function<int16_t, size_t>
+struct spp_hash<int16_t> : public spp_unary_function<int16_t, size_t>
 {
     SPP_INLINE size_t operator()(int16_t __v) const SPP_NOEXCEPT
     { return spp_mix_32(static_cast<uint32_t>(__v)); }
 };
 
 template <>
-struct spp_hash<uint16_t> : public std::unary_function<uint16_t, size_t>
+struct spp_hash<uint16_t> : public spp_unary_function<uint16_t, size_t>
 {
     SPP_INLINE size_t operator()(uint16_t __v) const SPP_NOEXCEPT
     { return spp_mix_32(static_cast<uint32_t>(__v)); }
 };
 
 template <>
-struct spp_hash<int32_t> : public std::unary_function<int32_t, size_t>
+struct spp_hash<int32_t> : public spp_unary_function<int32_t, size_t>
 {
     SPP_INLINE size_t operator()(int32_t __v) const SPP_NOEXCEPT
     { return spp_mix_32(static_cast<uint32_t>(__v)); }
 };
 
 template <>
-struct spp_hash<uint32_t> : public std::unary_function<uint32_t, size_t>
+struct spp_hash<uint32_t> : public spp_unary_function<uint32_t, size_t>
 {
     SPP_INLINE size_t operator()(uint32_t __v) const SPP_NOEXCEPT
     { return spp_mix_32(static_cast<uint32_t>(__v)); }
 };
 
 template <>
-struct spp_hash<int64_t> : public std::unary_function<int64_t, size_t>
+struct spp_hash<int64_t> : public spp_unary_function<int64_t, size_t>
 {
     SPP_INLINE size_t operator()(int64_t __v) const SPP_NOEXCEPT
     { return spp_mix_64(static_cast<uint64_t>(__v)); }
 };
 
 template <>
-struct spp_hash<uint64_t> : public std::unary_function<uint64_t, size_t>
+struct spp_hash<uint64_t> : public spp_unary_function<uint64_t, size_t>
 {
     SPP_INLINE size_t operator()(uint64_t __v) const SPP_NOEXCEPT
     { return spp_mix_64(static_cast<uint64_t>(__v)); }
 };
 
 template <>
-struct spp_hash<float> : public std::unary_function<float, size_t>
+struct spp_hash<float> : public spp_unary_function<float, size_t>
 {
     SPP_INLINE size_t operator()(float __v) const SPP_NOEXCEPT
     {
@@ -287,7 +298,7 @@ struct spp_hash<float> : public std::unary_function<float, size_t>
 };
 
 template <>
-struct spp_hash<double> : public std::unary_function<double, size_t>
+struct spp_hash<double> : public spp_unary_function<double, size_t>
 {
     SPP_INLINE size_t operator()(double __v) const SPP_NOEXCEPT
     {
@@ -342,8 +353,8 @@ static inline uint32_t s_spp_popcount_default(uint64_t x) SPP_NOEXCEPT
     const uint64_t h01 = uint64_t(0x0101010101010101); // the sum of 256 to the power of 0,1,2,3...
 
     x -= (x >> 1) & m1;             // put count of each 2 bits into those 2 bits
-    x = (x & m2) + ((x >> 2) & m2); // put count of each 4 bits into those 4 bits
-    x = (x + (x >> 4)) & m4;        // put count of each 8 bits into those 8 bits
+    x = (x & m2) + ((x >> 2) & m2); // put count of each 4 bits into those 4 bits 
+    x = (x + (x >> 4)) & m4;        // put count of each 8 bits into those 8 bits 
     return (x * h01)>>56;           // returns left 8 bits of x + (x<<8) + (x<<16) + (x<<24)+...
 }
 
@@ -351,13 +362,13 @@ static inline uint32_t s_spp_popcount_default(uint64_t x) SPP_NOEXCEPT
     static inline uint32_t count_trailing_zeroes(size_t v) SPP_NOEXCEPT
     {
         size_t x = (v & -v) - 1;
-        // sadly sizeof() required to build on macos
+        // sadly sizeof() required to build on macos 
         return sizeof(size_t) == 8 ? s_spp_popcount_default((uint64_t)x) : s_spp_popcount_default((uint32_t)x);
     }
 
     static inline uint32_t s_popcount(size_t v) SPP_NOEXCEPT
     {
-        // sadly sizeof() required to build on macos
+        // sadly sizeof() required to build on macos 
         return sizeof(size_t) == 8 ? s_spp_popcount_default((uint64_t)v) : s_spp_popcount_default((uint32_t)v);
     }
 #else
@@ -395,28 +406,28 @@ public:
     template<class U>
     libc_allocator& operator=(const libc_allocator<U> &) { return *this; }
 
-#ifndef SPP_NO_CXX11_RVALUE_REFERENCES
+#ifndef SPP_NO_CXX11_RVALUE_REFERENCES    
     libc_allocator(libc_allocator &&) {}
     libc_allocator& operator=(libc_allocator &&) { return *this; }
 #endif
 
-    pointer allocate(size_t n, const_pointer  /* unused */= 0)
+    pointer allocate(size_t n, const_pointer  /* unused */= 0) 
     {
         return static_cast<pointer>(malloc(n * sizeof(T)));
     }
 
-    void deallocate(pointer p, size_t /* unused */)
+    void deallocate(pointer p, size_t /* unused */) 
     {
         free(p);
     }
 
-    pointer reallocate(pointer p, size_t new_size)
+    pointer reallocate(pointer p, size_t new_size) 
     {
         return static_cast<pointer>(realloc(p, new_size * sizeof(T)));
     }
 
     // extra API to match spp_allocator interface
-    pointer reallocate(pointer p, size_t /* old_size */, size_t new_size)
+    pointer reallocate(pointer p, size_t /* old_size */, size_t new_size) 
     {
         return static_cast<pointer>(realloc(p, new_size * sizeof(T)));
     }

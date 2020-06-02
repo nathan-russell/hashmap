@@ -1,8 +1,8 @@
 Package: hashmap
 Type: Package
 Title: The Faster Hash Map
-Version: 0.2.2
-Date: 2017-11-16
+Version: 0.2.3
+Date: 2020-06-02
 Authors@R: person("Nathan", "Russell", email = "russell.nr2012@gmail.com",
     role = c("aut", "cre"))
 URL: https://github.com/nathan-russell/hashmap
@@ -17,7 +17,6 @@ Imports:
 LinkingTo: Rcpp,
     BH
 Suggests:
-    devtools,
     microbenchmark,
     testthat
 Depends:
@@ -34,4 +33,6 @@ Collate:
     'plugin.R'
     'save_hashmap.R'
     'zzz.R'
-RoxygenNote: 6.0.1
+RoxygenNote: 7.1.0
+Encoding: UTF-8
+

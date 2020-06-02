@@ -3,7 +3,6 @@
 \name{internal-functions}
 \alias{internal-functions}
 \alias{.left_outer_join_impl}
-\alias{.left_outer_join_impl}
 \alias{.right_outer_join_impl}
 \alias{.inner_join_impl}
 \alias{.full_outer_join_impl}

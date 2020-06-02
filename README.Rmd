@@ -1,7 +1,5 @@
 ---
-output:
-  md_document:
-    variant: markdown_github
+output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -92,7 +90,7 @@ HH[[c("A", "B")]]
 ```
 
 It is important to note that unlike the `environment`-based solution, 
-`hashmap` does *NOT* offer the flexibilty to store arbitrary types of 
+`hashmap` does *NOT* offer the flexibility to store arbitrary types of 
 objects. Any combination of the following *atomic* vector types is 
 currently permitted: 
 
@@ -178,14 +176,14 @@ either of `[[` or `$find`:
     # [1] -0.23017749  0.07050839
     ```
 
-+ For non-existant lookup keys, `NA` is returned: 
++ For non-existent lookup keys, `NA` is returned: 
 
     ```R
     H[[c("a", "A", "b")]]
     # [1] -0.5604756         NA -0.2301775
     ```
     
-+ Use `$has_key` to check for the existance of individual keys, or `$has_keys` 
++ Use `$has_key` to check for the existence of individual keys, or `$has_keys` 
 for a vector of keys: 
 
     ```R

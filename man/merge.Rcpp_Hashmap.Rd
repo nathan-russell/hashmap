@@ -5,8 +5,7 @@
 \alias{merge.Rcpp_Hashmap}
 \title{Merge two Hashmaps}
 \usage{
-\method{merge}{Rcpp_Hashmap}(x, y, type = c("inner", "left", "right", "full"),
-  ...)
+\method{merge}{Rcpp_Hashmap}(x, y, type = c("inner", "left", "right", "full"), ...)
 }
 \arguments{
 \item{x}{an object created by a call to \code{hashmap}.}
