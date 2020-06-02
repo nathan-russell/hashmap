@@ -84,8 +84,10 @@
        #include <functional>
        #define SPP_HASH_CLASS  std::hash
     #else
-       #include <unordered_map>
-       #define SPP_HASH_CLASS std::hash
+       // #include <tr1/unordered_map>
+       // #define SPP_HASH_CLASS std::tr1::hash
+       #include <boost/functional/hash.hpp>
+       #define SPP_HASH_CLASS boost::hash
     #endif
 
     #if !__has_feature(cxx_noexcept)
@@ -100,8 +102,10 @@
             #define SPP_NO_CXX11_NOEXCEPT
         #endif
     #else
-        #include <unordered_map>
-        #define SPP_HASH_CLASS std::hash
+        // #include <tr1/unordered_map>
+        // #define SPP_HASH_CLASS std::tr1::hash
+        #include <boost/functional/hash.hpp>
+        #define SPP_HASH_CLASS boost::hash
         #define SPP_NO_CXX11_NOEXCEPT
     #endif
 #else
