@@ -84,8 +84,8 @@
        #include <functional>
        #define SPP_HASH_CLASS  std::hash
     #else
-       #include <tr1/unordered_map>
-       #define SPP_HASH_CLASS std::tr1::hash
+       #include <unordered_map>
+       #define SPP_HASH_CLASS std::hash
     #endif
 
     #if !__has_feature(cxx_noexcept)
@@ -100,8 +100,8 @@
             #define SPP_NO_CXX11_NOEXCEPT
         #endif
     #else
-        #include <tr1/unordered_map>
-        #define SPP_HASH_CLASS std::tr1::hash
+        #include <unordered_map>
+        #define SPP_HASH_CLASS std::hash
         #define SPP_NO_CXX11_NOEXCEPT
     #endif
 #else
