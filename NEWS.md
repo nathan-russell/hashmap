@@ -4,7 +4,6 @@
 
 * Fixed a bug that was causing a warnings on Windows from `sparsepp`.
 
-
 # hashmap 0.2.2
 
 ## Bug Fixes
