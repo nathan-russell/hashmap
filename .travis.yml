@@ -1,42 +1,9 @@
 # Sample .travis.yml for R projects.
-#
-# See README.md for instructions, or for more configuration options,
-# see the wiki:
-#   https://github.com/craigcitro/r-travis/wiki
-
-language: c
-
-sudo: required
+language: r
+cache: packages
 
 env:
   global:
-    - R_BUILD_ARGS="--no-build-vignettes --no-manual"
-    - R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
     - RunAllTests="yes"
-
-compiler:
-  - clang
-
-before_install:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-  - chmod 755 ./travis-tool.sh
-  - ./travis-tool.sh bootstrap
-  - sudo add-apt-repository -y ppa:edd/misc
-  - sudo apt-get update -q
-
-install:
-  - ./travis-tool.sh install_github RcppCore/Rcpp
-  - ./travis-tool.sh install_github eddelbuettel/bh
-  - ./travis-tool.sh install_deps
-
-script: ./travis-tool.sh run_tests
-
-after_failure:
-  - ./travis-tool.sh dump_logs
-  - cat /home/travis/build/nathan-russell/hashmap/hashmap.Rcheck/00install.out
-  - cat /home/travis/build/nathan-russell/hashmap/hashmap.Rcheck/00check.log
-
-notifications:
-  email:
-    on_success: change
-    on_failure: change
+    - RGL_USE_NULL=TRUE
+    - R_REMOTES_NO_ERRORS_FROM_WARNINGS=true    
