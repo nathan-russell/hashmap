@@ -1,7 +1,7 @@
 Package: hashmap
 Type: Package
 Title: The Faster Hash Map
-Version: 0.2.2
+Version: 0.3.0
 Date: 2017-11-16
 Authors@R: person("Nathan", "Russell", email = "russell.nr2012@gmail.com",
     role = c("aut", "cre"))

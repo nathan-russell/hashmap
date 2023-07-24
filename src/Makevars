@@ -1,5 +1,1 @@
-PKG_CPPFLAGS = 	-DBOOST_NO_INT64_T 			\
-				-DBOOST_NO_INTEGRAL_INT64_T \
-				-DBOOST_NO_LONG_LONG		\
-				-DNO_SPP_LONG_LONG			\
-				-I../inst/include/hashmap
+PKG_CPPFLAGS = -I../inst/include/hashmap
